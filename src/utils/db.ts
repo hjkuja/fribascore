@@ -1,4 +1,3 @@
-import { openDB } from 'idb';
 import type { DBSchema } from 'idb';
 import type { Course } from '../types/course';
 import type { Player } from '../types/player';
@@ -20,6 +19,8 @@ interface FribaDB extends DBSchema {
 }
 
 export type StoreName = 'courses' | 'rounds' | 'players';
+
+const { openDB } = await import('idb');
 
 const dbPromise = openDB<FribaDB>('fribascore', 1, {
   upgrade(db) {
