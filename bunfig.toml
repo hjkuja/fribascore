@@ -1,0 +1,7 @@
+[test]
+preload = ["./test/happydom.ts", "./test/setupTests.ts"]
+pathIgnorePatterns = [
+  "test/e2e/**",
+  "e2e/**",
+  "playwright/**"
+]
