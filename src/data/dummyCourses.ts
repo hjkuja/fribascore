@@ -11,6 +11,10 @@ function createCourse(id: string, name: string, holes: Hole[]): Course {
 }
 
 export const dummyCourses: Course[] = [
+  createCourse("one-in-hole", "One Hole Wonder", [
+    { number: 1,  par: 1, length: 50 }
+  ]),
+
   createCourse("kivenlahti", "Kivenlahti Frisbeegolf", [
     { number: 1,  par: 3, length: 120 },
     { number: 2,  par: 3, length: 95  },
