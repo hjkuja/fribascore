@@ -37,10 +37,58 @@
 - **Build**: `bun run build` compiles TypeScript and bundles with Vite (`package.json`).
 - **Linting**: `bun lint` runs ESLint on the project (`package.json`).
   - Use this to find potential errors.
-- **Typecheck**: `bun x tsc --noEmit` runs the TypeScript compiler without emitting files.
+- **Typecheck**: `bun x tsc --noEmit` runs the TypeScript compiler without emitting files. The test config is checked separately via `tsconfig.test.json`: `bun run typecheck` covers both.
 - **Preview**: `bun preview` serves built app locally (`package.json`).
-- **Testing**: No test scripts or frameworks configured (e.g., no Jest or Vitest in `package.json`).
+- **Testing**: Bun's built-in test runner with `@testing-library/react` and `happy-dom` for DOM simulation. See the **Testing** section below for details.
 - **CI**: GitHub Actions workflow (`.github/workflows/ci.yml`) runs on pushes and pull requests to `main`: installs dependencies (`bun ci`), lints, typechecks, builds, and uploads the `dist/` folder as an artifact.
+
+## Testing
+
+### Framework and Tools
+
+- **Test runner**: Bun's built-in test runner (`bun:test`). No Jest or Vitest.
+- **DOM environment**: `happy-dom` via `@happy-dom/global-registrator` (preloaded in `test/happydom.ts`).
+- **React testing**: `@testing-library/react` with `@testing-library/jest-dom` matchers (setup in `test/setupTests.ts`).
+- **Preloads**: `bunfig.toml` auto-preloads `test/happydom.ts` then `test/setupTests.ts` before every test file. `afterEach(cleanup)` is registered globally.
+- **TypeScript**: Tests use `tsconfig.test.json` (extends `tsconfig.app.json`, includes `bun-types`).
+- **E2E**: Playwright directory exists at `test/e2e/playwright/` but is not yet configured. E2E paths are excluded from `bun test` via `bunfig.toml`.
+
+### Running Tests
+
+```bash
+bun test                  # run all unit/component tests once
+bun test --watch          # re-run on file changes
+bun test --coverage       # run with coverage report
+bun test src/components/CourseDetails  # run tests in a specific path
+```
+
+### File Organization
+
+- **Unit/component tests**: Co-located with the source file in the same directory, named `<ComponentName>.test.tsx` (e.g., `src/components/CourseDetails/CourseDetails.test.tsx`).
+- **Data/utility tests**: Co-located in the same folder as the module (e.g., `src/data/dummyCourses.test.ts`).
+- **E2E tests**: Go under `test/e2e/playwright/` and are excluded from `bun test`.
+- **Test helpers/setup**: Shared setup files live in `test/` (e.g., `test/happydom.ts`, `test/setupTests.ts`).
+
+### Writing Tests
+
+- Import test primitives from `bun:test`: `import { describe, test, expect, beforeEach, afterEach } from "bun:test"`.
+- Use `@testing-library/react` (`render`, `screen`, etc.) and `@testing-library/jest-dom` matchers (`toBeDefined`, `toBeInTheDocument`, etc.).
+- Wrap components that need routing in `<MemoryRouter>` from `react-router-dom`.
+- Mock data inline in the test file; avoid importing from production DB utilities.
+
+```tsx
+import { describe, test, expect } from "bun:test";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { MyComponent } from "./MyComponent";
+
+describe("MyComponent", () => {
+  test("renders expected content", () => {
+    render(<MemoryRouter><MyComponent /></MemoryRouter>);
+    expect(screen.getByText("Hello")).toBeDefined();
+  });
+});
+```
 
 ## Project Conventions
 
