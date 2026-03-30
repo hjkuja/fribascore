@@ -4,7 +4,7 @@ This document describes the planned .NET backend API for FribaScore.
 
 ## Status
 
-⬜ Not yet started. The backend will be scaffolded in a `backend/` directory at the monorepo root.
+⬜ Not yet started. The backend will be scaffolded in a `api/` directory at the monorepo root.
 
 ## Technology
 
@@ -68,25 +68,3 @@ Rounds are created locally and uploaded when online.
 The frontend uses a sync queue to batch and retry failed operations. The backend does not have a dedicated sync endpoint — operations are sent as individual requests against the entity endpoints above.
 
 See [Backend Sync Spec](../specs/backend-sync.md) for the full sync strategy.
-
-## Error Responses
-
-All error responses follow this shape:
-
-```json
-{
-  "error": "string",
-  "details": "string (optional)"
-}
-```
-
-Standard HTTP status codes are used:
-
-| Code | Meaning |
-|------|---------|
-| 200 | OK |
-| 201 | Created |
-| 400 | Bad request (validation error) |
-| 401 | Unauthorized |
-| 404 | Not found |
-| 500 | Server error |
