@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { describe, test, expect, beforeEach } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
 import {
   getCourses,
   seedDummyCourses,
@@ -35,8 +35,16 @@ const sampleRound: Round = {
   scores: [{ playerId: "player-1", holeNumber: 1, score: 3 }],
 };
 
+let originalConsoleDebug: typeof console.debug;
+
 beforeEach(async () => {
+  originalConsoleDebug = console.debug;
+  console.debug = mock(() => {});
   await deleteDatabase();
+});
+
+afterEach(() => {
+  console.debug = originalConsoleDebug;
 });
 
 describe("getCourses()", () => {
