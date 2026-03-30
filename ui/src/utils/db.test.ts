@@ -46,9 +46,6 @@ describe("getCourses()", () => {
   });
 
   test("returns courses after they are saved", async () => {
-    await saveRound(sampleRound); // ensure DB is open
-    const db = await import("./db");
-    await db.savePlayer(samplePlayer); // warm up
     // use seedDummyCourses to add a course
     await seedDummyCourses([sampleCourse]);
     const courses = await getCourses();
