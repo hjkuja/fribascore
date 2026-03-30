@@ -12,6 +12,7 @@ Welcome to the FribaScore project docs. This directory contains the canonical te
 
 ### Specifications
 - [Requirements](./specs/requirements.md) — functional and non-functional requirements
+- [UI Design Guidelines](./specs/ui-design.md) — colour palette, typography, components, animation
 - [PWA Spec](./specs/pwa.md) — installability, offline caching, service worker
 - [Backend Sync Spec](./specs/backend-sync.md) — sync strategy between local and remote data
 

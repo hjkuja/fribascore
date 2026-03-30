@@ -8,8 +8,6 @@ This guide covers everything you need to run FribaScore locally for development.
 - A modern browser (Chrome or Firefox recommended for IndexedDB DevTools)
 - Git
 
-> **Why Bun?** Bun is used instead of npm/yarn/pnpm. Always use `bun` commands — do not use `npm` or `yarn` as they may produce inconsistent results.
-
 ## Setup
 
 ```bash
