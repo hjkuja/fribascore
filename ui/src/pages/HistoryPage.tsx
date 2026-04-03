@@ -51,7 +51,10 @@ export default function HistoryPage() {
                     {course?.name ?? "Unknown course"}
                   </span>
                   <span className="history-page__meta">
-                    {new Date(round.date).toLocaleDateString()}
+                    {new Date(round.date).toLocaleString(undefined, {
+                      day: '2-digit', month: '2-digit', year: 'numeric',
+                      hour: '2-digit', minute: '2-digit'
+                    })}
                     {" · "}
                     {round.players.length}{" "}
                     {round.players.length === 1 ? "player" : "players"}
