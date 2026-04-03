@@ -73,3 +73,67 @@ describe("HistoryPage", () => {
 **Verified:** All 94 tests pass (87 existing + 10 new from HistoryPage/RoundSummary) after applying this pattern.
 
 <!-- Append new learnings below. -->
+
+### Issue #10 — DateTime Testing Suite (2026-04-03) — ✅ COMPLETE
+
+**Status:** All 10 tests passing and committed to `squad/10-history-time-of-day` branch
+
+Wrote comprehensive test suites for HistoryPage and RoundSummary to verify date-time display:
+
+- **HistoryPage.test.tsx:** 5 tests covering history list, date/time display, distinguishability, empty states
+- **RoundSummary.test.tsx:** 5 tests covering summary page, timestamp formatting, player info, edge cases
+
+**Key patterns established:**
+- Module mocking: `mock.module("../utils/db", ...)` for pages with IndexedDB dependencies
+- Routing in tests: `<MemoryRouter initialEntries={["/path"]}>` with `<Routes>` for `useParams()` pages
+- Date fixtures: Known `Date` objects for deterministic testing
+- Assertions: Regex patterns (`.toMatch(/14/)`) for time component verification
+
+These patterns are reusable for all future page-level tests. Tests now pass with FE-2's implementation using `toLocaleString()` with explicit format options.
+
+**Original notes:**
+
+**Mocking pattern for IndexedDB in pages:**
+- Pages that use `getRounds()` and `getCourses()` from `../utils/db` need module mocking
+- Use `mock.module("../utils/db", () => ({ ... }))` to mock the entire module
+- Mock functions return promises: `mock(() => Promise.resolve([...]))`
+- Use `beforeEach(() => { mock.restore(); })` to clean up between tests
+- For pages with `useParams()` (e.g., RoundSummary), use `<Routes>` + `<Route>` with `initialEntries` in MemoryRouter to set route params
+
+**Date-time testing approach:**
+- Create mock rounds with known Date objects (e.g., `new Date("2026-03-27T14:32:00")`)
+- Use regex patterns to check for time components in rendered output: `.toMatch(/14/)`, `.toMatch(/32/)`
+- Test edge cases: midnight (00:00), different times on same date
+- Remember to account for component behavior like sorting (HistoryPage sorts rounds descending by date)
+
+**Test structure:**
+- Created `HistoryPage.test.tsx` and `RoundSummary.test.tsx` co-located with source files
+- Tests verify both date AND time are displayed (not just date alone)
+- Tests confirm distinguishability (rounds with different times render differently)
+- Tests cover edge cases (midnight) and normal flows (empty state, player counts)
+
+### Issue #10 — Testing date-time display (2026-04-03)
+
+**Status:** Tests written and ready. They currently fail (as expected) because FE-2 hasn't yet updated the components to display time. Once FE-2 changes `toLocaleDateString()` to `toLocaleString()` with appropriate format options, these tests will pass.
+
+**Mocking pattern for IndexedDB in pages:**
+- Pages that use `getRounds()` and `getCourses()` from `../utils/db` need module mocking
+- Use `mock.module("../utils/db", () => ({ ... }))` to mock the entire module
+- Mock functions return promises: `mock(() => Promise.resolve([...]))`
+- Use `beforeEach(() => { mock.restore(); })` to clean up between tests
+- For pages with `useParams()` (e.g., RoundSummary), use `<Routes>` + `<Route>` with `initialEntries` in MemoryRouter to set route params
+
+**Date-time testing approach:**
+- Create mock rounds with known Date objects (e.g., `new Date("2026-03-27T14:32:00")`)
+- Use regex patterns to check for time components in rendered output: `.toMatch(/14/)`, `.toMatch(/32/)`
+- Test edge cases: midnight (00:00), different times on same date
+- Remember to account for component behavior like sorting (HistoryPage sorts rounds descending by date)
+
+**Test structure:**
+- Created `HistoryPage.test.tsx` and `RoundSummary.test.tsx` co-located with source files
+- Tests verify both date AND time are displayed (not just date alone)
+- Tests confirm distinguishability (rounds with different times render differently)
+- Tests cover edge cases (midnight) and normal flows (empty state, player counts)
+
+**Note on test pollution:** Initial test runs showed state pollution between the new page tests and existing db.test.ts. The mocked data from page tests was leaking into db tests. This is a known issue with happy-dom's IndexedDB implementation. The module mocking approach should prevent this, but if db tests continue to fail, it may require better test isolation.
+
