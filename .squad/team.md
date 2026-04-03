@@ -19,21 +19,6 @@
 | OPS-9 | DevOps / CI | .squad/agents/ops-9/charter.md | Active |
 | Scribe | Session Logger | .squad/agents/scribe/charter.md | Active |
 | Ralph | Work Monitor | — | Active |
-| @copilot | 🤖 Coding Agent | copilot-instructions.md | Active |
-
-<!-- copilot-auto-assign: false -->
-
-### @copilot Capability Profile
-
-| Capability | Level | Notes |
-|-----------|-------|-------|
-| React component implementation | 🟢 Strong | Well-scoped UI tasks |
-| TypeScript / type fixes | 🟢 Strong | Clear scope, single files |
-| IndexedDB / db.ts changes | 🟡 Good | Straightforward CRUD ops |
-| CSS styling | 🟡 Good | Following existing patterns |
-| Test writing | 🟡 Good | With clear spec |
-| Architecture decisions | 🔴 Weak | Route to LD-7 |
-| Multi-file refactors | 🔴 Weak | Tends to miss ripple effects |
 
 ## Issue Source
 
