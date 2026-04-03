@@ -40,13 +40,12 @@ Each platform tracks issue lifecycle differently. Squad normalizes these into a 
 | Open, CI failure | `state: open`, PR `statusCheckRollup: FAILURE` | `ciFailure` |
 | Closed | `state: closed` | `done` |
 
-**Issue labels used by Squad:**
-- `squad` — Issue is in Squad backlog
-- `squad:{member}` — Assigned to specific agent
-- `squad:untriaged` — Needs triage
-- `go:needs-research` — Needs investigation before implementation
-- `priority:p{N}` — Priority level (0=critical, 1=high, 2=medium, 3=low)
-- `next-up` — Queued for next agent pickup
+**Active issue labels used by Squad:**
+- `squad` — Issue is in the Squad backlog
+- `squad:{member}` — Assigned to a specific agent (including `squad:copilot` when enabled)
+- `type:*` — Managed issue type namespace (feature, bug, spike, docs, chore, epic)
+- `bug` — High-signal bug report
+- `feedback` — High-signal user feedback
 
 **Branch naming convention:**
 ```
@@ -379,7 +378,7 @@ Re-reviewed → Approved → Merged → Issue closed
 
 ### Pattern 3: Research-Then-Implement
 ```
-Issue created → Labeled `go:needs-research` → Research agent spawned → 
+Issue created → Triage identifies research spike → Research agent spawned → 
 Research documented → Research PR merged → Implementation issue created → 
 Implementation agent spawned → Feature built → PR merged
 ```
