@@ -21,4 +21,23 @@
 
 ## Learnings
 
+### Issue #10 — DateTime Display Fix (2026-04-03)
+
+**Status:** ✅ Complete  
+**PR:** #14 (open)
+
+Fixed date-time display in HistoryPage and RoundSummary by replacing `toLocaleDateString()` with `toLocaleString()`. Uses explicit format options to ensure consistent locale-aware formatting:
+
+```typescript
+new Date(date).toLocaleString(undefined, {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+})
+```
+
+Allows users to distinguish rounds played on same day by displaying both date and time. No breaking changes; display-only modification.
+
 <!-- Append new learnings below. -->
