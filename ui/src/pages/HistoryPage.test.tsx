@@ -1,4 +1,4 @@
-import { describe, expect, test, mock, beforeEach } from "bun:test";
+import { describe, expect, test, mock, beforeEach, afterEach } from "bun:test";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import HistoryPage from "./HistoryPage";
@@ -23,7 +23,26 @@ const mockCourse: Course = {
 };
 
 describe("HistoryPage", () => {
+  let mockGetRounds: ReturnType<typeof mock>;
+  let mockGetCourses: ReturnType<typeof mock>;
+  let originalDbModule: typeof db;
+
   beforeEach(() => {
+    // Store original before mocking
+    originalDbModule = { ...db };
+    
+    mockGetRounds = mock(() => Promise.resolve([]));
+    mockGetCourses = mock(() => Promise.resolve([]));
+    
+    mock.module("../utils/db", () => ({
+      getRounds: mockGetRounds,
+      getCourses: mockGetCourses,
+    }));
+  });
+
+  afterEach(() => {
+    // Restore the original module
+    mock.module("../utils/db", () => originalDbModule);
     mock.restore();
   });
 
@@ -36,10 +55,8 @@ describe("HistoryPage", () => {
       scores: [],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<HistoryPage />);
 
@@ -69,10 +86,8 @@ describe("HistoryPage", () => {
       scores: [],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound1, mockRound2])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound1, mockRound2]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<HistoryPage />);
 
@@ -102,10 +117,8 @@ describe("HistoryPage", () => {
       scores: [],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<HistoryPage />);
 
@@ -118,10 +131,8 @@ describe("HistoryPage", () => {
   });
 
   test("shows empty state when no rounds exist", async () => {
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<HistoryPage />);
 
@@ -145,10 +156,8 @@ describe("HistoryPage", () => {
       scores: [],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<HistoryPage />);
 

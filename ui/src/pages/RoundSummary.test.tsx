@@ -1,4 +1,4 @@
-import { describe, expect, test, mock, beforeEach } from "bun:test";
+import { describe, expect, test, mock, beforeEach, afterEach } from "bun:test";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import RoundSummary from "./RoundSummary";
@@ -29,7 +29,26 @@ const mockCourse: Course = {
 };
 
 describe("RoundSummary", () => {
+  let mockGetRounds: ReturnType<typeof mock>;
+  let mockGetCourses: ReturnType<typeof mock>;
+  let originalDbModule: typeof db;
+
   beforeEach(() => {
+    // Store original before mocking
+    originalDbModule = { ...db };
+    
+    mockGetRounds = mock(() => Promise.resolve([]));
+    mockGetCourses = mock(() => Promise.resolve([]));
+    
+    mock.module("../utils/db", () => ({
+      getRounds: mockGetRounds,
+      getCourses: mockGetCourses,
+    }));
+  });
+
+  afterEach(() => {
+    // Restore the original module
+    mock.module("../utils/db", () => originalDbModule);
     mock.restore();
   });
 
@@ -42,10 +61,8 @@ describe("RoundSummary", () => {
       scores: [{ playerId: "player-1", holeNumber: 1, score: 3 }],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<RoundSummary />, ["/rounds/round-1/summary"]);
 
@@ -67,10 +84,8 @@ describe("RoundSummary", () => {
       scores: [{ playerId: "player-1", holeNumber: 1, score: 3 }],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<RoundSummary />, ["/rounds/round-2/summary"]);
 
@@ -92,10 +107,8 @@ describe("RoundSummary", () => {
       scores: [{ playerId: "player-1", holeNumber: 1, score: 3 }],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<RoundSummary />, ["/rounds/round-3/summary"]);
 
@@ -108,10 +121,8 @@ describe("RoundSummary", () => {
   });
 
   test("shows not found message when round does not exist", async () => {
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<RoundSummary />, ["/rounds/nonexistent/summary"]);
 
@@ -139,10 +150,8 @@ describe("RoundSummary", () => {
       ],
     };
 
-    mock.module("../utils/db", () => ({
-      getRounds: mock(() => Promise.resolve([mockRound])),
-      getCourses: mock(() => Promise.resolve([mockCourse])),
-    }));
+    mockGetRounds.mockImplementation(() => Promise.resolve([mockRound]));
+    mockGetCourses.mockImplementation(() => Promise.resolve([mockCourse]));
 
     renderWithRouter(<RoundSummary />, ["/rounds/round-1/summary"]);
 
