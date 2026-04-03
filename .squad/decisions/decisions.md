@@ -69,3 +69,39 @@ test("my test", async () => {
 - Applied to: HistoryPage.test.tsx, RoundSummary.test.tsx (10 tests, all passing)
 - Pattern ready for adoption across all future page-level tests
 - Prevents IndexedDB pollution in test suite
+
+---
+
+## Locale-Agnostic Date/Time Test Assertions (2026-04-03)
+
+**Agent:** QT-3  
+**Issue:** #10  
+**Status:** Adopted
+
+Use regex patterns that match time components across different locale formats instead of asserting specific digit values.
+
+```typescript
+// ❌ Locale-dependent (fails on different locales)
+expect(dateElement.textContent).toMatch(/14/);
+
+// ✅ Locale-agnostic (works across locales)
+expect(dateElement.textContent).toMatch(/\d{2}[.:]\d{2}/);
+```
+
+The pattern `/\d{2}[.:]\d{2}/` matches both colon (`:`) and period (`.`) separators used in different locales.
+
+**Rationale:**
+- CI runs on Linux (en-US locale) while development happens on Windows (e.g., Finnish locale)
+- Different locales format times differently (`14:32` vs `14.32`)
+- Locale-agnostic patterns remain representative of real user behavior
+- Avoids mocking `toLocaleString()` or forcing explicit locales in production
+
+**Impact:**
+- Fixed 6 test assertions across HistoryPage.test.tsx and RoundSummary.test.tsx
+- CI green on squad/10-history-time-of-day
+- Pattern reusable for all future date/time test assertions
+
+**Alternatives Considered:**
+- Mock `toLocaleString()` (reduces test representativeness)
+- Force explicit locale in code (impacts user experience)
+- Check for specific formatted string (locale-dependent)
