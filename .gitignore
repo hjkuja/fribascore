@@ -22,3 +22,6 @@ coverage/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Temporary dev files
+dev/
