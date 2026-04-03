@@ -137,3 +137,36 @@ These patterns are reusable for all future page-level tests. Tests now pass with
 
 **Note on test pollution:** Initial test runs showed state pollution between the new page tests and existing db.test.ts. The mocked data from page tests was leaking into db tests. This is a known issue with happy-dom's IndexedDB implementation. The module mocking approach should prevent this, but if db tests continue to fail, it may require better test isolation.
 
+### 2026-04-03: Locale-Agnostic Date/Time Testing Pattern
+
+**Problem:** Tests passed locally on Windows but failed in GitHub Actions CI (Linux) due to locale-dependent date/time formatting. When using `toLocaleString(undefined, {...})`, different operating systems and locales produce different output formats:
+- Windows (Finnish locale): `"27.03.2026 14.32"` (period as time separator)
+- Linux CI (likely en-US): `"3/27/2026, 2:32 PM"` (colon as time separator)
+
+**Root cause:** Tests were asserting specific hour/minute values (e.g., `.toMatch(/14/)`, `.toMatch(/32/)`) which worked on Windows but failed on Linux where the time format differs.
+
+**Solution:** Use a regex pattern that matches time components across locales by checking for common time separators:
+
+```typescript
+// ❌ BAD: Locale-dependent (looks for specific digits)
+expect(dateElement.textContent).toMatch(/14/);
+expect(dateElement.textContent).toMatch(/32/);
+
+// ✅ GOOD: Locale-agnostic (looks for HH:MM or HH.MM pattern)
+expect(dateElement.textContent).toMatch(/\d{2}[.:]\d{2}/);
+```
+
+**Key points:**
+- The pattern `/\d{2}[.:]\d{2}/` matches both `14:32` and `14.32` formats
+- This verifies that a time component (hours and minutes) is present without assuming a specific locale format
+- For tests checking distinguishability, also verify the strings are different: `expect(firstText).not.toBe(secondText)`
+- Consider using an explicit locale like `'fi-FI'` in production code if the app is locale-specific, or keep `undefined` for user's locale
+
+**Applied to:**
+- `ui/src/pages/HistoryPage.test.tsx`: 3 tests
+- `ui/src/pages/RoundSummary.test.tsx`: 3 tests
+
+**Result:** All 94 tests now pass both locally (Windows) and in CI (Linux).
+
+<!-- Append new learnings below. -->
+
