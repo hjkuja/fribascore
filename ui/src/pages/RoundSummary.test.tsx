@@ -70,9 +70,9 @@ describe("RoundSummary", () => {
       expect(screen.queryByText("Loading...")).toBeNull();
     });
 
-    // Verify that time is present by checking for time separator (: or . depending on locale)
+    // Verify specific en-GB format: 27/03/2026, 14:32
     const dateElement = screen.getByText(/27/);
-    expect(dateElement.textContent).toMatch(/\d{2}[.:]\d{2}/);
+    expect(dateElement.textContent).toMatch(/27\/03\/2026, 14:32/);
   });
 
   test("renders date with different time correctly", async () => {
