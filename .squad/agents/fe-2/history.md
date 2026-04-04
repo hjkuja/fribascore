@@ -40,4 +40,25 @@ new Date(date).toLocaleString(undefined, {
 
 Allows users to distinguish rounds played on same day by displaying both date and time. No breaking changes; display-only modification.
 
+### Locale Standardization — DateTime Formatting (2026-04-03)
+
+**Status:** ✅ Complete
+
+**Problem:** HistoryPage.tsx and RoundSummary.tsx used `toLocaleString(undefined, {...})` which picks up the OS system locale. This caused inconsistent output between Finnish Windows (e.g., `27.3.2026, 14:32`) and Linux CI environments.
+
+**Solution:** Standardized on `'en-GB'` locale with `hour12: false` for 24-hour format:
+```typescript
+new Date(round.date).toLocaleString('en-GB', {
+  day: '2-digit', month: '2-digit', year: 'numeric',
+  hour: '2-digit', minute: '2-digit',
+  hour12: false
+})
+```
+
+**Output:** Consistent `27/03/2026, 14:32` format everywhere.
+
+**Test Updates:** Updated locale-sensitive assertions in both test files to expect en-GB format instead of locale-variable regex patterns.
+
+**Key Learning:** Always specify an explicit locale when locale-sensitive formatting affects test assertions or CI/local reproducibility. Use a neutral locale like 'en-GB' for consistent cross-platform behavior.
+
 <!-- Append new learnings below. -->
