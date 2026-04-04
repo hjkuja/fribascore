@@ -359,7 +359,7 @@ Before spawning an agent, determine which model to use. Check these layers in or
 | Writing code (implementation, refactoring, test code, bug fixes) | `claude-sonnet-4.6` | Standard | Quality and accuracy matter for code. Use standard tier. |
 | Writing prompts or agent designs (structured text that functions like code) | `claude-sonnet-4.6` | Standard | Prompts are executable — treat like code. |
 | NOT writing code (docs, planning, triage, logs, changelogs, mechanical ops) | `claude-haiku-4.5` | Fast | Cost first. Haiku handles non-code tasks. |
-| Visual/design work requiring image analysis | `claude-opus-4.5` | Premium | Vision capability required. Overrides cost rule. |
+| Visual/design work requiring image analysis | `claude-sonnet-4.6` | Standard | Use sonnet by default. Bump to `claude-opus-4.6` only if user explicitly enables premium mode. |
 
 **Role-to-model mapping** (applying cost-first principle):
 
@@ -370,13 +370,13 @@ Before spawning an agent, determine which model to use. Check these layers in or
 | Lead / Architect | auto (per-task) | Mixed: code review needs quality, planning needs cost | Architecture proposals → premium; triage/planning → haiku |
 | Prompt Engineer | auto (per-task) | Mixed: prompt design is like code, research is not | Prompt architecture → sonnet; research/analysis → haiku |
 | Copilot SDK Expert | `claude-sonnet-4.6` | Technical analysis that often touches code | Pure research → `claude-haiku-4.5` |
-| Designer / Visual | `claude-opus-4.5` | Vision-capable model required | — (never downgrade — vision is non-negotiable) |
+| Designer / Visual | `claude-sonnet-4.6` | Default — no auto-premium | Bump to `claude-opus-4.6` only if user enables premium mode |
 | DevRel / Writer | `claude-haiku-4.5` | Docs and writing — not code | — |
 | Scribe / Logger | `claude-haiku-4.5` | Mechanical file ops — cheapest possible | — (never bump Scribe) |
 | Git / Release | `claude-haiku-4.5` | Mechanical ops — changelogs, tags, version bumps | — (never bump mechanical ops) |
 
 **Task complexity adjustments** (apply at most ONE — no cascading):
-- **Bump UP to premium:** architecture proposals, reviewer gates, security audits, multi-agent coordination (output feeds 3+ agents)
+- **Bump UP to `gpt-5.4`:** architecture proposals, reviewer gates, security audits, multi-agent coordination (output feeds 3+ agents). Premium (`claude-opus-4.6`) is NEVER auto-selected — only activated via explicit user directive ("enable premium mode").
 - **Bump DOWN to fast/cheap:** typo fixes, renames, boilerplate, scaffolding, changelogs, version bumps
 - **Switch to code specialist (`gpt-5.3-codex`):** large multi-file refactors, complex implementation from spec, heavy code generation (500+ lines)
 - **Switch to analytical diversity (`gemini-3-pro-preview`):** code reviews where a second perspective helps, security reviews, architecture reviews after a rejection
@@ -423,9 +423,9 @@ When spawning, include the model in your acknowledgment:
 
 ```
 🔧 Fenster (claude-sonnet-4.6) — refactoring auth module
-🎨 Redfoot (claude-opus-4.5 · vision) — designing color system
+🎨 Redfoot (claude-sonnet-4.6) — designing color system
 📋 Scribe (claude-haiku-4.5 · fast) — logging session
-⚡ Keaton (claude-opus-4.6 · bumped for architecture) — reviewing proposal
+⚡ Keaton (gpt-5.4 · bumped for architecture) — reviewing proposal
 📝 McManus (claude-haiku-4.5 · fast) — updating docs
 ```
 

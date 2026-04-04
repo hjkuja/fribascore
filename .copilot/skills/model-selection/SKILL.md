@@ -51,7 +51,7 @@ Resolution is **first-match-wins** — the highest layer with a value wins.
 5. CHECK Layer 3: Determine task type:
    - Code (implementation, tests, refactoring, bug fixes) → `claude-sonnet-4.6`
    - Prompts, agent designs → `claude-sonnet-4.6`
-   - Visual/design with image analysis → `claude-opus-4.6`
+   - Visual/design with image analysis → `claude-sonnet-4.6` (or `claude-opus-4.6` if user has explicitly enabled premium mode)
    - Non-code (docs, planning, triage, changelogs) → `claude-haiku-4.5`
 6. FALLBACK Layer 4: `claude-haiku-4.5`
 7. INCLUDE model in spawn acknowledgment: `🔧 {Name} ({resolved_model}) — {task}`
