@@ -64,9 +64,9 @@ describe("HistoryPage", () => {
       expect(screen.queryByText("Loading...")).toBeNull();
     });
 
-    // Verify that time is present by checking for time separator (: or . depending on locale)
+    // Verify specific en-GB format: 27/03/2026, 14:32
     const metaText = screen.getByText(/27/);
-    expect(metaText.textContent).toMatch(/\d{2}[.:]\d{2}/);
+    expect(metaText.textContent).toMatch(/27\/03\/2026, 14:32/);
   });
 
   test("distinguishes rounds with different times on same date", async () => {
@@ -102,9 +102,9 @@ describe("HistoryPage", () => {
     const firstMeta = listItems[0].querySelector(".history-page__meta");
     const secondMeta = listItems[1].querySelector(".history-page__meta");
 
-    // Verify both have time components (HH:MM or HH.MM pattern) and are different
-    expect(firstMeta?.textContent).toMatch(/\d{2}[.:]\d{2}/);
-    expect(secondMeta?.textContent).toMatch(/\d{2}[.:]\d{2}/);
+    // Verify both have time components in 24-hour format and are different
+    expect(firstMeta?.textContent).toMatch(/16:45/);
+    expect(secondMeta?.textContent).toMatch(/09:15/);
     expect(firstMeta?.textContent).not.toBe(secondMeta?.textContent);
   });
 
@@ -126,9 +126,9 @@ describe("HistoryPage", () => {
       expect(screen.queryByText("Loading...")).toBeNull();
     });
 
-    // Verify that time component is present (HH:MM or HH.MM pattern)
+    // Verify that time component is present in 24-hour format
     const metaText = screen.getByText(/27/);
-    expect(metaText.textContent).toMatch(/\d{2}[.:]\d{2}/);
+    expect(metaText.textContent).toMatch(/00:00/);
   });
 
   test("shows empty state when no rounds exist", async () => {

@@ -88,9 +88,10 @@ export default function RoundSummary() {
         <li><span>Total par</span><span>{totalPar}</span></li>
         <li><span>Total length</span><span>{totalLength} m</span></li>
       </ul>
-      <p className="round-summary__date">{new Date(round.date).toLocaleString(undefined, {
+      <p className="round-summary__date">{new Date(round.date).toLocaleString('en-GB', {
         day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
+        hour: '2-digit', minute: '2-digit',
+        hour12: false
       })}</p>
       <table className="round-summary__table" aria-label="Player totals and relative to par">
         <thead>
