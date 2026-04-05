@@ -61,6 +61,6 @@
 - **Mapping as extension methods:** `entity.ToResponse()` defined in Application/Mapping/ — clean, no automapper needed at this scale.
 - **Input validation in services:** `BadRequestException` thrown inside service (e.g. empty Name) before any DB write — Api layer stays clean.
 - **Build result:** All 3 source projects build with 0 errors, 0 warnings.
-- **Open item for QT-3:** Both test projects (`FribaScore.Api.Tests.Unit`, `FribaScore.Api.Tests.Integration`) reference `FribaScore.Api` which no longer contains `AppDbContext` or entity models. Integration tests that mock/inject `AppDbContext` directly need project references updated to `FribaScore.Application`. Unit tests mocking endpoints need service interfaces from `FribaScore.Application` and DTOs from `FribaScore.Contracts`.
+- **Test project references:** Both test projects (`FribaScore.Api.Tests.Unit`, `FribaScore.Api.Tests.Integration`) updated to reference `FribaScore.Application` (for service interfaces, models, DbContext) and `FribaScore.Contracts` (for DTOs, exceptions). Unit tests do NOT reference `FribaScore.Api` to keep them fast (no ASP.NET hosting overhead). Integration tests reference all three to boot full app via `WebApplicationFactory<Program>`. Build verified: 0 errors, 0 warnings.
 
 
