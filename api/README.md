@@ -56,9 +56,10 @@ api/
         Players/PlayerEndpoints.cs
         Rounds/RoundEndpoints.cs
         EndpointExtensions.cs
-      Data/AppDbContext.cs        # EF Core + Identity DbContext
-      Models/                    # Entity models
       Program.cs                 # Top-level statements entry point
+    FribaScore.Application/
+      Database/AppDbContext.cs   # EF Core + Identity DbContext
+      Models/                    # Entity models
   test/
     FribaScore.Api.Tests.Unit/
     FribaScore.Api.Tests.Integration/
