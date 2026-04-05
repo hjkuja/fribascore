@@ -1,0 +1,6 @@
+obj/
+bin/
+*.user
+
+appsettings.Development.json
+**/appsettings.Development.json
