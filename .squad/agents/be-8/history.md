@@ -18,7 +18,8 @@
 - IDs: `crypto.randomUUID()` with `uuid` package fallback
 - Seed data: `ui/src/data/dummyCourses.ts` — loaded on first run if no courses exist
 - Backend: planned ASP.NET Core API in `api/` — NOT yet scaffolded
-- Auth: TBD (JWT or ASP.NET Core Identity)
+- Auth: **ASP.NET Core Identity** with **HttpOnly cookie** storage (confirmed 2026-04-05)
+- Database: **PostgreSQL** with Entity Framework Core (confirmed 2026-04-05)
 
 ## Learnings
 

@@ -1,5 +1,45 @@
 # Team Decisions
 
+## Database Technology (2026-04-05)
+
+**Agent:** Hannu Kujanpää (via Copilot)
+
+**Decision:** PostgreSQL
+
+**Rationale:** User explicit choice for FribaScore backend.
+
+**Status:** Adopted
+
+---
+
+## Authentication Technology & Storage (2026-04-05)
+
+**Agent:** Hannu Kujanpää (confirmed), recommended by LD-7
+
+**Decision 1 — Auth Framework:** ASP.NET Core Identity
+
+**Rationale:**
+- Framework-integrated, battle-tested, handles password hashing, token lifecycle, and account lockout
+- Seamless integration with PostgreSQL via Entity Framework Core
+- No custom JWT implementation needed
+- Production-ready for offline-first PWA sync pattern
+
+**Decision 2 — JWT Client-Side Storage:** HttpOnly cookie with SameSite=Strict
+
+**Rationale:**
+- Automatic token attachment to API requests (essential for PWA sync)
+- Not readable by JavaScript (XSS protection via HttpOnly flag)
+- CSRF risk mitigated by SameSite=Strict
+- Native support in ASP.NET Core auth middleware
+
+**Status:** Adopted
+
+**Next Steps:**
+- BE-8 documents ASP.NET Identity setup in ROADMAP
+- Backend API skeleton includes HttpOnly cookie configuration
+
+---
+
 ## DateTime Formatting Standard (2026-04-03)
 
 **Agent:** FE-2  
