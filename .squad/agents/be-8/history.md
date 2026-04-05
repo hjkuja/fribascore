@@ -51,3 +51,16 @@
 - **Build result:** All 3 projects build with 0 errors, 0 warnings.
 - **Key Pattern:** For Minimal API endpoint naming, always use unique `WithName()` strings globally — the simplest approach is appending the resource name to the method name.
 
+### 2026-04-05 — Issue #25: 3-Project Service Layer Split
+
+- **Pattern adopted:** Api / Application / Contracts split modelled on hjkuja/ShouldDo reference repo.
+- **Contracts is dep-free:** Status codes hardcoded as ints (404, 400) — avoids referencing `Microsoft.AspNetCore.Http` and keeps Contracts a clean POCO project.
+- **ServiceExtensions.cs in Application:** Encapsulates `AddDbContext` + service registrations behind `AddApplicationServices(connectionString)`. Api's Program.cs never needs to import EF or Npgsql directly.
+- **Result<T> usage:** `LanguageExt.Common.Result<T>` — wrap success with `new Result<T>(value)`, wrap failure with `new Result<T>(exception)`. `.Match(success, failure)` called at endpoint layer.
+- **AppDbContext stays in Application:** Api project has no EF Core or Npgsql NuGet references. Identity DI (`AddEntityFrameworkStores<AppDbContext>`) still works because Application is a project reference (types are transitive).
+- **Mapping as extension methods:** `entity.ToResponse()` defined in Application/Mapping/ — clean, no automapper needed at this scale.
+- **Input validation in services:** `BadRequestException` thrown inside service (e.g. empty Name) before any DB write — Api layer stays clean.
+- **Build result:** All 3 source projects build with 0 errors, 0 warnings.
+- **Open item for QT-3:** Both test projects (`FribaScore.Api.Tests.Unit`, `FribaScore.Api.Tests.Integration`) reference `FribaScore.Api` which no longer contains `AppDbContext` or entity models. Integration tests that mock/inject `AppDbContext` directly need project references updated to `FribaScore.Application`. Unit tests mocking endpoints need service interfaces from `FribaScore.Application` and DTOs from `FribaScore.Contracts`.
+
+
