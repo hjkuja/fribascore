@@ -2,7 +2,7 @@
 
 ## Database Technology (2026-04-05)
 
-**Agent:** Hannu Kujanpää (via Copilot)
+**Agent:** hjkuja (via Copilot)
 
 **Decision:** PostgreSQL
 
@@ -14,7 +14,7 @@
 
 ## Authentication Technology & Storage (2026-04-05)
 
-**Agent:** Hannu Kujanpää (confirmed), recommended by LD-7
+**Agent:** hjkuja (confirmed), recommended by LD-7
 
 **Decision 1 — Auth Framework:** ASP.NET Core Identity
 
