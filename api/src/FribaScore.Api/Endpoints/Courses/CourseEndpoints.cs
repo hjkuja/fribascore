@@ -13,25 +13,25 @@ public static class CourseEndpoints
         var group = endpoints.MapGroup(BasePath).WithTags("Courses");
 
         group.MapGet(string.Empty, GetAll)
-            .WithName(nameof(GetAll))
+            .WithName(nameof(GetAll) + "Courses")
             .WithDescription("Returns all courses.")
             .Produces<IEnumerable<CourseResponse>>();
 
         group.MapGet("{id:guid}", GetById)
-            .WithName(nameof(GetById))
+            .WithName(nameof(GetById) + "Course")
             .WithDescription("Returns a single course by ID.")
             .Produces<CourseResponse>()
             .ProducesProblem(404);
 
         group.MapPost(string.Empty, Create)
-            .WithName(nameof(Create))
+            .WithName(nameof(Create) + "Course")
             .WithDescription("Creates a new course.")
             .Produces<CourseResponse>(201)
             .ProducesProblem(400)
             .RequireAuthorization();
 
         group.MapDelete("{id:guid}", Delete)
-            .WithName(nameof(Delete))
+            .WithName(nameof(Delete) + "Course")
             .WithDescription("Deletes a course by ID.")
             .ProducesProblem(404)
             .RequireAuthorization();
