@@ -16,7 +16,7 @@ describe("Welcome", () => {
 
   test("renders a link to courses", () => {
     const { getByRole } = renderWithRouter(<Welcome />);
-    expect(getByRole("link", { name: "Courses" })).toBeDefined();
+    expect(getByRole("link", { name: "Choose a Course" })).toBeDefined();
   });
 });
 
