@@ -20,6 +20,39 @@
 
 **Skills:** Documented in `.squad/skills/bun-mock-isolation/SKILL.md`
 
+### Locale Standardization for DateTime Formatting (FE-2, 2026-04-03)
+
+**Status:** Complete  
+**Context:** DateTime formatting inconsistency across environments (Windows/Linux locales)  
+**Decision:** Standardize on `'en-GB'` locale with `hour12: false` for all DateTime displays.
+
+```typescript
+new Date(date).toLocaleString('en-GB', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false
+})
+```
+
+**Output:** Consistent `27/03/2026, 14:32` across all machines.
+
+**Rationale:** Eliminates locale-based variability, enables precise test assertions, 24-hour format reduces ambiguity for same-day rounds.
+
+**Files Changed:** HistoryPage.tsx, RoundSummary.tsx, + tests. All 94 tests passing.
+
+### Model Preference Directive (hjkuja, 2026-04-04)
+
+**Status:** Adopted  
+**Context:** Agent selection guidance for team  
+**Decision:**
+- Default model for all agents: `claude-sonnet-4.6`
+- Heavy coder tasks (large multi-file refactors, 500+ line code generation): `gpt-5.3-codex`
+
+**Rationale:** User directive — captured for team memory and consistency.
+
 ## Governance
 
 - All meaningful changes require team consensus
