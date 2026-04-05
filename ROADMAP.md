@@ -33,15 +33,15 @@ The design spec (`docs/specs/ui-design.md`) defines a retro-futurist aesthetic. 
 
 | Status | Item | Issue |
 |--------|------|-------|
-| ⬜ | CSS design system — full custom-property palette (`--bg`, `--text`, `--accent`, `--glass-bg`, etc.) | — |
-| ⬜ | Google Fonts — load Bebas Neue + Space Grotesk from Google Fonts | — |
-| ⬜ | Background effects — amber grid, film-grain overlay, scanlines, ambient orbs | — |
-| ⬜ | Glassmorphism card style (`backdrop-filter`, glass border, hover lift/glow) | — |
-| ⬜ | Button design system — primary (solid amber) + outline variants | — |
-| ⬜ | Navigation bar — sticky glass, Bebas Neue logo, branded, mobile collapse | — |
-| ⬜ | Home page — hero / marketing layout (currently a placeholder) | — |
-| ⬜ | Start Round page — styled layout | — |
-| ⬜ | Round Scoring page — styled layout | — |
+| ⬜ | CSS design system — full custom-property palette (`--bg`, `--text`, `--accent`, `--glass-bg`, etc.) | [#16](https://github.com/hjkuja/fribascore/issues/16) |
+| ⬜ | Google Fonts — load Bebas Neue + Space Grotesk from Google Fonts | [#17](https://github.com/hjkuja/fribascore/issues/17) |
+| ⬜ | Background effects — amber grid, film-grain overlay, scanlines, ambient orbs | [#18](https://github.com/hjkuja/fribascore/issues/18) |
+| ⬜ | Glassmorphism card style (`backdrop-filter`, glass border, hover lift/glow) | [#19](https://github.com/hjkuja/fribascore/issues/19) |
+| ⬜ | Button design system — primary (solid amber) + outline variants | [#20](https://github.com/hjkuja/fribascore/issues/20) |
+| ⬜ | Navigation bar — sticky glass, Bebas Neue logo, branded, mobile collapse | [#21](https://github.com/hjkuja/fribascore/issues/21) |
+| ⬜ | Home page — hero / marketing layout (currently a placeholder) | [#22](https://github.com/hjkuja/fribascore/issues/22) |
+| ⬜ | Start Round page — styled layout | [#23](https://github.com/hjkuja/fribascore/issues/23) |
+| ⬜ | Round Scoring page — styled layout | [#24](https://github.com/hjkuja/fribascore/issues/24) |
 
 ---
 
@@ -52,7 +52,7 @@ See `docs/specs/pwa.md` for full spec.
 | Status | Item | Issue |
 |--------|------|-------|
 | ⬜ | Web App Manifest — `manifest.json` in `ui/public/`, linked in `index.html` | — |
-| ⬜ | App icon — copy `icon-512.png` to `ui/public/`, replace `vite.svg` favicon | — |
+| ⬜ | App icon — copy `icon-512.png` to `ui/public/`, replace `vite.svg` favicon | [#30](https://github.com/hjkuja/fribascore/issues/30) |
 | ⬜ | Service worker — add `vite-plugin-pwa`, configure auto-registration | — |
 | ⬜ | Offline caching strategy — precache app shell; network-first for API calls | — |
 | ⬜ | iOS meta tags — `apple-mobile-web-app-capable`, `apple-touch-icon`, status bar style | — |
@@ -66,11 +66,11 @@ See `docs/api/overview.md`. The backend has not been started. It will live in `a
 
 | Status | Item | Issue |
 |--------|------|-------|
-| ⬜ | .NET Web API project scaffold (`api/` directory, solution file, CI hook) | — |
-| ⬜ | Auth endpoints — `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | — |
-| ⬜ | Courses API — `GET /courses`, `GET /courses/{id}` | — |
-| ⬜ | Players API — `GET /PUT /POST /DELETE /players` | — |
-| ⬜ | Rounds API — `GET /rounds`, `POST /rounds` | — |
+| ⬜ | .NET Web API project scaffold (`api/` directory, solution file, CI hook) | [#25](https://github.com/hjkuja/fribascore/issues/25) |
+| ⬜ | Auth endpoints — `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | [#26](https://github.com/hjkuja/fribascore/issues/26) |
+| ⬜ | Courses API — `GET /courses`, `GET /courses/{id}` | [#27](https://github.com/hjkuja/fribascore/issues/27) |
+| ⬜ | Players API — `GET /PUT /POST /DELETE /players` | [#28](https://github.com/hjkuja/fribascore/issues/28) |
+| ⬜ | Rounds API — `GET /rounds`, `POST /rounds` | [#29](https://github.com/hjkuja/fribascore/issues/29) |
 
 ---
 
