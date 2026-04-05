@@ -15,7 +15,7 @@
 }
 
 .players-management__delete {
-    background: #242424;
+    background: var(--bg);
     color: #df0000;
     border: 1px solid #ff8888;
     padding: 6px 8px;

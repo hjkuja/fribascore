@@ -1,0 +1,248 @@
+/* ============================================================
+   FribaScore Design System — CSS Custom Properties
+   Retro-Futurist theme: dark backgrounds, warm amber accents,
+   CRT-era textures, clean modern typography.
+
+   Fonts loaded in index.html:
+   Bebas Neue (display/headings) + Space Grotesk (body/UI)
+   ============================================================ */
+
+:root {
+  /* ---------- Colour Palette -------------------------------- */
+  --bg:           #242424;               /* Primary background — dark charcoal     */
+  --bg-deep:      #1a1a1a;               /* Deeper background for contrast sections */
+  --accent:       #c77c27;               /* Amber orange — the signature accent    */
+  --accent-dim:   rgba(199,124,39,0.30); /* Borders, dividers, subtle glow         */
+  --accent-glow:  rgba(199,124,39,0.15); /* Box shadows, card hover glow           */
+  --accent-tint:  rgba(199,124,39,0.06); /* Badge/tag backgrounds, faint fills     */
+  --text:         #f0e6d3;               /* Primary text — warm off-white          */
+  --text-muted:   #9a8f82;               /* Secondary text — warm gray             */
+  --glass-bg:     rgba(255,255,255,0.04);/* Glass card surfaces                    */
+  --glass-border: rgba(255,255,255,0.08);/* Subtle light borders                   */
+
+  /* Backward-compatibility alias */
+  --main-accent-color: var(--accent);
+
+  /* ---------- Typography ------------------------------------ */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Space Grotesk', system-ui, sans-serif;
+
+  /* Type scale */
+  --text-hero:    clamp(3.8rem, 7.5vw, 6.5rem);  /* Hero H1                  */
+  --text-section: clamp(2.6rem, 5vw, 4rem);       /* Section titles           */
+  --text-label:   0.7rem;                          /* Section/metadata labels  */
+  --text-body:    1.05rem;                         /* Body copy                */
+  --text-card:    0.875rem;                        /* Card body                */
+  --text-nav:     0.875rem;                        /* Nav links                */
+  --text-small:   0.75rem;                         /* Small supplemental text  */
+
+  /* ---------- Spacing --------------------------------------- */
+  --max-width:         1120px;
+  --section-padding-y: 6.5rem;
+  --section-padding-x: 2.5rem;
+  --hero-padding-y:    5rem;
+  --hero-padding-x:    2.5rem;
+  --gap-cards:         1.4rem;
+  --gap-feature:       5rem;
+
+  /* ---------- Border Radius --------------------------------- */
+  --radius-card:   10px;
+  --radius-button: 3px;   /* Deliberately sharp — reinforces retro-technical aesthetic */
+  --radius-badge:  100px;
+  --radius-input:  4px;
+
+  /* ---------- Shadows & Effects ----------------------------- */
+  --shadow-card-hover:  0 8px 32px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.06);
+  --shadow-btn-primary: 0 8px 28px rgba(199,124,39,0.45);
+  --shadow-btn-outline: 0 0 16px var(--accent-dim);
+
+  /* ---------- Transitions ----------------------------------- */
+  --transition-card: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  --transition-btn:  transform 0.2s, box-shadow 0.2s, filter 0.2s;
+  --transition-base: 0.15s ease;
+
+  /* ---------- Nav ------------------------------------------ */
+  --nav-height: 64px;
+  --nav-bg:     rgba(36,36,36,0.75);
+}
+
+/* ============================================================
+   Keyframe Animations
+   Prefer transform + opacity — GPU-accelerated, no layout reflow
+   ============================================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-22px); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+/* ============================================================
+   Background Textures — Retro-Futurist Atmosphere
+   ============================================================ */
+
+/* Subtle amber grid over the full viewport */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(199,124,39,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199,124,39,0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Film-grain texture — blends over all content for analog feel */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  /* SVG fractal-noise grain */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   Utility Classes
+   ============================================================ */
+
+/* Glass Morphism Card */
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: var(--transition-card);
+}
+
+.card:hover {
+  border-color: var(--accent-dim);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-5px);
+}
+
+/* Primary Button — solid amber fill */
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg-deep);
+  border: none;
+  padding: 0.85rem 2.1rem;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: var(--transition-btn);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-primary);
+  filter: brightness(1.08);
+}
+
+/* Outline Button — transparent with amber border */
+.btn-outline {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+  padding: 0.5rem 1.3rem;
+  border-radius: var(--radius-button);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.btn-outline:hover {
+  background: var(--accent);
+  color: var(--bg-deep);
+  box-shadow: var(--shadow-btn-outline);
+}
+
+/* Status Badge — pill-shaped with amber border */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-dim);
+  border-radius: var(--radius-badge);
+  padding: 0.38rem 1rem;
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Section Label — small all-caps above section titles */
+.section-label {
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
+
+/* Section Title — Bebas Neue display heading */
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  letter-spacing: 2px;
+  line-height: 1;
+  margin: 0;
+}
+
+/* Retro Divider — centered ornamental separator */
+.retro-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.retro-divider::before,
+.retro-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.retro-divider span {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  color: var(--text-muted);
+}
+
+/* Ambient Orb — large blurred radial gradient for atmospheric depth */
+.orb {
+  border-radius: 50%;
+  filter: blur(100px);
+  background: radial-gradient(circle, rgba(199,124,39,0.20) 0%, transparent 70%);
+  pointer-events: none;
+}
