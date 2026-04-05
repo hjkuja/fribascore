@@ -95,4 +95,23 @@ new Date(round.date).toLocaleString('en-GB', {
 - Backward-compat alias: `--main-accent-color: var(--accent)`
 
 **Key Pattern:** When replacing the old `--main-accent-color`, define it as an alias in the design system rather than removing it, to avoid cascading breakage across existing components. Then update components to use `--accent` as time allows.
+### Dark Theme Enforcement — Remove Light Mode Overrides (2026-04-03)
+
+**Status:** ✅ Complete  
+**Branch:** squad/16-css-design-system
+
+**Problem:** The app had `@media (prefers-color-scheme: light)` blocks in five CSS files that overrode the dark design system when the OS was set to light mode. Additionally, raw `rgba()` and hex values in several components bypassed the design token system.
+
+**Files fixed:**
+- `ui/src/index.css` — removed light mode block, changed `color-scheme: light dark` → `color-scheme: dark`
+- `ui/src/app/AppLayout.css` — removed `#ffffff` header/sidebar override block
+- `ui/src/components/CourseList/CourseList.css` — replaced raw rgba values with `--glass-bg`, `--glass-border`, `--accent-tint`, `--accent-dim`, `--text-muted`; removed light mode block
+- `ui/src/pages/HistoryPage.css` — replaced raw rgba borders with `--glass-border`; removed light mode block
+- `ui/src/components/PlayerSelectModal/PlayerSelectModal.css` — removed entire light mode override block (dark values already correct)
+- `ui/src/components/PlayersManagement/PlayersManagement.css` — replaced hardcoded `#df0000`/`#ff8888` with `--accent`/`--accent-dim`
+
+**Welcome redesign:**
+Replaced placeholder text with a proper app home screen: large Bebas Neue display title, amber tagline, `.btn-primary` CTA to /courses, secondary link to /history. Mobile-first layout centered vertically in viewport.
+
+**Key Learning:** Setting `color-scheme: dark` on `:root` (not `light dark`) is the correct signal for a dark-only app — it tells browsers to use dark scrollbars, form controls, and default styles without needing any `prefers-color-scheme` overrides.
 

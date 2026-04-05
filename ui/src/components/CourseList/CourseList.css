@@ -45,3 +45,10 @@
   color: var(--text-muted);
 }
 
+@media (prefers-color-scheme: light) {
+  .course-list__meta,
+  .course-list__empty {
+    color: var(--text-muted);
+  }
+}
+

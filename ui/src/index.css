@@ -3,7 +3,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: dark;
+  color-scheme: light dark;
   color: var(--text);
   background-color: var(--bg);
 
@@ -11,6 +11,19 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:           #f5f0e8;               /* Warm parchment background */
+    --bg-deep:      #ede6d6;               /* Slightly deeper warm tone */
+    --text:         #1a1208;               /* Near-black warm text */
+    --text-muted:   #6b5c3e;              /* Warm brown muted text */
+    --glass-bg:     rgba(255,255,255,0.55);
+    --glass-border: rgba(150,110,60,0.18);
+    --nav-bg:       rgba(245,240,232,0.80);
+    color-scheme: light;
+  }
 }
 
 .page-back {

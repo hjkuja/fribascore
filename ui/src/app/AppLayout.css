@@ -123,4 +123,14 @@
   min-height: 0;
 }
 
+@media (prefers-color-scheme: light) {
+  .app-header {
+    background-color: var(--nav-bg);
+    border-bottom-color: var(--glass-border);
+  }
+  .side-menu {
+    background-color: var(--bg);
+    box-shadow: 2px 0 12px rgba(100, 70, 20, 0.12);
+  }
+}
 
