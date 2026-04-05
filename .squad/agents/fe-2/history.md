@@ -62,3 +62,37 @@ new Date(round.date).toLocaleString('en-GB', {
 **Key Learning:** Always specify an explicit locale when locale-sensitive formatting affects test assertions or CI/local reproducibility. Use a neutral locale like 'en-GB' for consistent cross-platform behavior.
 
 <!-- Append new learnings below. -->
+
+### Issue #16 — CSS Design System (2026-04-04)
+
+**Status:** ✅ Complete
+**PR:** #32
+
+**Files Created:**
+- `ui/src/styles/design-system.css` — Full CSS custom property palette implementing the retro-futurist design system from `docs/specs/ui-design.md`
+
+**Files Modified:**
+- `ui/index.html` — Added Google Fonts preconnect + stylesheet (Bebas Neue + Space Grotesk)
+- `ui/src/main.tsx` — Imports `design-system.css` before `index.css` for global availability
+- `ui/src/index.css` — Updated `:root` to reference `var(--font-body)`, `var(--text)`, `var(--bg)` instead of hardcoded values; removed duplicated `--main-accent-color`
+- `ui/src/app/AppLayout.css` — `#242424` → `var(--bg)` for header and side-menu backgrounds
+- `ui/src/components/HoleScore/HoleScore.css` — `var(--main-accent-color)` → `var(--accent)`
+- `ui/src/components/PlayerSelectModal/PlayerSelectModal.css` — `#1a1a1a` → `var(--bg-deep)`, all `var(--main-accent-color)` → `var(--accent)`
+- `ui/src/components/PlayersManagement/PlayersManagement.css` — `#242424` → `var(--bg)`
+- `ui/src/pages/RoundSummary.css` — `#ddd` border → `var(--glass-border)`, `#242424` → `var(--bg)`
+
+**Design System Covers:**
+- Colour palette: `--bg`, `--bg-deep`, `--accent`, `--accent-dim`, `--accent-glow`, `--accent-tint`, `--text`, `--text-muted`, `--glass-bg`, `--glass-border`
+- Typography: `--font-display` (Bebas Neue), `--font-body` (Space Grotesk), type scale variables
+- Spacing: `--max-width`, section/hero padding, card/feature gap tokens
+- Border radius: `--radius-card` (10px), `--radius-button` (3px sharp), `--radius-badge`, `--radius-input`
+- Shadows/Effects: `--shadow-card-hover`, `--shadow-btn-primary`, `--shadow-btn-outline`
+- Transitions: `--transition-card`, `--transition-btn`, `--transition-base`
+- Nav: `--nav-height`, `--nav-bg`
+- Keyframes: `fadeIn`, `float`, `pulse-ring`, `blink`
+- Background textures: `body::before` amber grid, `body::after` film-grain
+- Utility classes: `.card`, `.btn-primary`, `.btn-outline`, `.badge`, `.section-label`, `.section-title`, `.retro-divider`, `.orb`
+- Backward-compat alias: `--main-accent-color: var(--accent)`
+
+**Key Pattern:** When replacing the old `--main-accent-color`, define it as an alias in the design system rather than removing it, to avoid cascading breakage across existing components. Then update components to use `--accent` as time allows.
+
