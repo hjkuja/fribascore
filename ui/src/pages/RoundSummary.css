@@ -40,11 +40,11 @@
 
 .round-summary__table th,
 .round-summary__table td {
-  border: 1px solid #ddd;
+  border: 1px solid var(--glass-border);
   padding: 0.5rem;
   text-align: center;
 }
 
 .round-summary__table th {
-  background-color: #242424;
+  background-color: var(--bg);
 }

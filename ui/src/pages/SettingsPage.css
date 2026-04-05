@@ -28,6 +28,6 @@
 
 @media (prefers-color-scheme: light) {
   .settings-page__section {
-    border-top-color: rgba(0, 0, 0, 0.15);
+    border-top-color: var(--glass-border);
   }
 }
