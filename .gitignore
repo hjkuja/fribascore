@@ -1,3 +1,6 @@
+# Ignore any appsettings.Development.json in any directory
+appsettings.Development.json
+**/appsettings.Development.json
 # Logs
 *.log
 
