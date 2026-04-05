@@ -21,7 +21,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        ? CookieSecurePolicy.SameAsRequest
+        : CookieSecurePolicy.Always;
 });
 
 builder.Services.AddCors(options =>
