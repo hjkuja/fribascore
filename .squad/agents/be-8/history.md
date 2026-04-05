@@ -39,3 +39,15 @@
 - **PR:** https://github.com/hjkuja/fribascore/pull/31
 - **Key Pattern:** When scaffolding modern .NET, always check built-in integrations first before adding external packages. ASP.NET Core 10 includes OpenAPI, Identity, EF Core by default.
 
+### 2026-04-05 — Issue #25: Full API scaffold (restructure + Minimal API)
+
+- **Structure:** api/ restructured to `api/src/FribaScore.Api/` + `api/test/`. git mv used for history preservation; prior session had already committed the moves.
+- **Minimal API pattern:** Replaced MVC Controllers with `MapGroup()` per resource, `TypedResults` for strongly-typed responses, `WithName()` + `WithDescription()` on every endpoint, `RequireAuthorization()` on mutating endpoints.
+- **WithName uniqueness:** `WithName()` values must be globally unique across all endpoint groups — solved by appending resource suffix (e.g. `nameof(GetAll) + "Players"`) to avoid duplicate route name conflicts.
+- **New packages:** `LanguageExt.Core` 4.4.9 (Result pattern for service layer), `Scalar.AspNetCore` 2.9.0 (OpenAPI UI replacing raw `/openapi/v1.json`).
+- **Directory.Build.props:** Placed at `api/` root (NOT inside `src/`) to apply `RestorePackagesWithLockFile=true` to all three projects. `RestoreLockedMode` only applies in CI.
+- **fribascore.slnx:** SLNX format (no GUIDs) replaces old `fribascore.sln`. Organized into `/src/` and `/test/` solution folders.
+- **Test projects:** `dotnet new xunit --framework net10.0`. Integration test project also gets `Microsoft.AspNetCore.Mvc.Testing` package + project reference to main API.
+- **Build result:** All 3 projects build with 0 errors, 0 warnings.
+- **Key Pattern:** For Minimal API endpoint naming, always use unique `WithName()` strings globally — the simplest approach is appending the resource name to the method name.
+
