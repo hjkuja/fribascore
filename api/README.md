@@ -24,13 +24,13 @@ docker run -d \
 ### 2. Restore packages
 
 ```powershell
-dotnet restore src/FribaScore.Api/FribaScore.Api.csproj
+dotnet restore
 ```
 
 ### 3. Apply EF Core migrations
 
 ```powershell
-dotnet ef database update --project src/FribaScore.Api
+dotnet ef database update --project src/FribaScore.Application --startup-project src/FribaScore.Api
 ```
 
 ### 4. Run the API
