@@ -7,7 +7,12 @@ public static class ApiResults
     public static IResult ToProblemResult(this Exception exception)
     {
         if (exception is not CustomException customException)
-            throw new InvalidOperationException("Exception type not handled.", exception);
+        {
+            return Results.Problem(
+                title: "Internal Server Error",
+                detail: "An unexpected error occurred.",
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
 
         return Results.Problem(
             title: customException.Title,
