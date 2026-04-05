@@ -101,3 +101,128 @@ describe("MyComponent", () => {
 
 - **Server Configuration**: Vite dev server allows specific hosts including localhost and configurable extras via `ALLOWED_HOST` or `VITE_ALLOWED_HOST` env vars (`vite.config.ts`). Useful for development in different environments.
 - **Package Manager**: Uses Bun (`bun@1.3.10`). Always use `bun` commands instead of `npm` or `yarn`.
+
+---
+
+## Backend API
+
+### Project Structure
+
+The backend lives in `api/` at the repo root. The solution file `fribascore.slnx` at the repo root includes all projects (frontend + backend).
+
+```
+api/
+  src/
+    FribaScore.Api/          # HTTP boundary — endpoints, middleware, Program.cs
+    FribaScore.Application/  # Business logic — services, DbContext, DI registration
+    FribaScore.Contracts/    # Shared types — DTOs, exceptions (no framework deps)
+  test/
+    FribaScore.Api.Tests.Unit/
+    FribaScore.Api.Tests.Integration/
+```
+
+**Dependency rule:** `Api` → `Application` → `Contracts`. `Contracts` has no project references.
+
+### Architecture
+
+- **3-project split**: `FribaScore.Api` (HTTP), `FribaScore.Application` (services + EF Core DbContext), `FribaScore.Contracts` (DTOs + exceptions)
+- **Service layer**: Endpoints inject service interfaces (`ICourseService`, `IPlayerService`, `IRoundService`) — never `DbContext` directly
+- **Result pattern**: Services return `Result<T>` from `LanguageExt.Common`. Endpoints call `.Match()` + `ToProblemResult()` from `ApiResults.cs` in the Api project
+- **Auth**: ASP.NET Core Identity with HttpOnly cookie sessions (`SameSite=Strict`). Never JWT, never `localStorage` for tokens
+- **Database**: PostgreSQL via EF Core + Npgsql. DbContext lives in `Application`
+- **OpenAPI**: Built-in .NET `AddOpenApi()` — docs at `/openapi/v1.json`. Scalar UI for browser exploration
+
+### Code Patterns
+
+**Endpoint class:**
+```csharp
+public static class CourseEndpoints
+{
+    public static RouteGroupBuilder MapCourseEndpoints(this RouteGroupBuilder group)
+    {
+        group.MapGet("/", GetAllCourses)
+            .WithName("GetAllCourses")
+            .WithSummary("Returns all courses");
+        return group;
+    }
+
+    private static async Task<Results<Ok<IEnumerable<CourseResponse>>, ProblemHttpResult>> GetAllCourses(
+        ICourseService courseService)
+    {
+        return (await courseService.GetAllAsync())
+            .Match(ok => TypedResults.Ok(ok), ex => ex.ToProblemResult());
+    }
+}
+```
+
+- Endpoint classes are `static`, use `MapGroup()`, inject service interfaces
+- Use `TypedResults` (not `Results.Ok()`), `WithName()`, `WithSummary()`
+- Return typed `Results<Ok<T>, ProblemHttpResult>` for OpenAPI response inference
+
+**Service interface (in `Application/Services/Interfaces/`):**
+```csharp
+public interface ICourseService
+{
+    Task<Result<IEnumerable<CourseResponse>>> GetAllAsync();
+}
+```
+
+**Service implementation:**
+```csharp
+public class CourseService(AppDbContext db) : ICourseService
+{
+    public async Task<Result<IEnumerable<CourseResponse>>> GetAllAsync()
+    {
+        var courses = await db.Courses.ToListAsync();
+        return courses.Select(c => c.ToResponse());
+    }
+}
+```
+
+**DTOs** — `record` types in `FribaScore.Contracts`:
+```
+Contracts/
+  Requests/   # CreateCourseRequest, UpdateCourseRequest, etc.
+  Responses/  # CourseResponse, PlayerResponse, RoundResponse, etc.
+```
+
+**Exceptions** — custom hierarchy in `Contracts/Exceptions/`:
+- Base: `CustomException` (carries HTTP status code)
+- Derived: `NotFoundException` (404), `BadRequestException` (400)
+
+**`ApiResults.cs`** in Api project — extension method used in all endpoint handlers:
+```csharp
+public static ProblemHttpResult ToProblemResult(this Exception ex) { ... }
+```
+
+**Mapping** — `ToResponse()` extension methods on entity classes, not in services.
+
+### Build and Test
+
+```bash
+dotnet build fribascore.slnx       # builds all projects
+dotnet test fribascore.slnx        # runs all tests
+dotnet run --project api/src/FribaScore.Api  # starts the API
+```
+
+**NuGet lockfiles:** `RestorePackagesWithLockFile=true` is set in `Directory.Build.props`. Always run `dotnet restore` after adding packages and commit the updated `packages.lock.json`.
+
+**CI:** `.github/workflows/api.yml` — runs independently of the UI CI workflow (`.github/workflows/ci.yml`).
+
+### Naming Conventions
+
+| Thing | Convention |
+|-------|-----------|
+| Endpoint classes | `CourseEndpoints`, `PlayerEndpoints`, `RoundEndpoints` |
+| Service interfaces | `ICourseService`, `IPlayerService`, `IRoundService` |
+| Test projects | `FribaScore.Api.Tests.Unit`, `FribaScore.Api.Tests.Integration` |
+| Mapping methods | `ToResponse()` extension on entity |
+| Request DTOs | `CreateCourseRequest`, `UpdatePlayerRequest`, etc. |
+| Response DTOs | `CourseResponse`, `PlayerResponse`, etc. |
+
+### .NET Coding Standards
+
+- **Target framework**: .NET 10
+- **Program.cs**: Top-level statements — no `Program` class wrapper
+- **Namespaces**: File-scoped (e.g., `namespace FribaScore.Api.Endpoints;`)
+- **DI registration**: Encapsulated in `ServiceExtensions` in `Application` — call `services.AddApplicationServices()` from `Program.cs`
