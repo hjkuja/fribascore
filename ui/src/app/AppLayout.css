@@ -123,12 +123,4 @@
   min-height: 0;
 }
 
-@media (prefers-color-scheme: light) {
-  .app-header {
-    background-color: #ffffff;
-  }
 
-  .side-menu {
-    background-color: #ffffff;
-  }
-}

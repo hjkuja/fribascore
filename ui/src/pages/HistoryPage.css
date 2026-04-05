@@ -13,11 +13,11 @@
 }
 
 .history-page__item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .history-page__item:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--glass-border);
 }
 
 .history-page__link {
@@ -43,14 +43,4 @@
 .history-page__meta {
   font-size: 0.85rem;
   opacity: 0.7;
-}
-
-@media (prefers-color-scheme: light) {
-  .history-page__item {
-    border-bottom-color: rgba(0, 0, 0, 0.1);
-  }
-
-  .history-page__item:first-child {
-    border-top-color: rgba(0, 0, 0, 0.1);
-  }
 }

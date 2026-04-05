@@ -1,18 +1,77 @@
-.welcome-courses-link {
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  min-height: calc(100dvh - 6rem);
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.welcome__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.welcome__tagline {
+  margin: 0;
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.welcome__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 20vw, 8rem);
+  line-height: 1;
+  letter-spacing: 4px;
+  color: var(--text);
+}
+
+.welcome__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.welcome__cta {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  color: inherit;
+  justify-content: center;
+  gap: 0.6rem;
   text-decoration: none;
+  width: 100%;
+  min-height: 52px;
+  font-size: 1rem;
 }
 
-.welcome-courses-link:hover {
-  text-decoration: underline;
-}
-
-.welcome-courses-icon {
-  width: 1.25em;
-  height: 1.25em;
+.welcome__cta-icon {
+  width: 1.2em;
+  height: 1.2em;
   flex-shrink: 0;
-  color: inherit;
+}
+
+.welcome__secondary-link {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  padding: 0.5rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.welcome__secondary-link:hover {
+  color: var(--text);
+  text-decoration: underline;
 }
