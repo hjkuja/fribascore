@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FribaScore.Api\FribaScore.Api.csproj" />
+    <ProjectReference Include="..\..\src\FribaScore.Application\FribaScore.Application.csproj" />
+    <ProjectReference Include="..\..\src\FribaScore.Contracts\FribaScore.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
