@@ -57,6 +57,13 @@
 - Sections covered: status, tech stack table, project structure with dependency flow, architecture patterns (Result<T>, service layer, DTOs, mapping), full endpoint reference with auth requirements, auth section (cookie-based Identity, issue #26 not yet implemented), local dev setup (connection string, Scalar UI, OpenAPI JSON URLs), CI notes (api.yml, --locked-mode).
 - Removed stale content: JWT references, sync queue section, placeholder TBDs.
 
+### 2026-04-05 — Fix: WithName operationId collision in CourseEndpoints
+
+- **Root cause:** `CourseEndpoints.cs` used bare method names (`nameof(GetAll)`, `nameof(GetById)`, etc.) which collide with identically-named methods in other endpoint classes — `WithName()` values must be globally unique across the entire app.
+- **Fix:** Appended resource suffix to each: `nameof(GetAll) + "Courses"`, `nameof(GetById) + "Course"`, `nameof(Create) + "Course"`, `nameof(Delete) + "Course"`.
+- **Convention confirmed:** Plural suffix for list endpoints (`GetAllCourses`, `GetAllPlayers`), singular for single-resource endpoints (`GetByIdCourse`, `CreateCourse`, `DeleteCourse`). Matches existing `PlayerEndpoints` and `RoundEndpoints` patterns.
+- **Build result:** 0 errors, 0 warnings.
+
 ### 2026-04-05 — Issue #25: 3-Project Service Layer Split
 
 - **Pattern adopted:** Api / Application / Contracts split modelled on hjkuja/ShouldDo reference repo.
