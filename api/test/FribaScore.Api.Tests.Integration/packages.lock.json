@@ -551,13 +551,26 @@
       "fribascore.api": {
         "type": "Project",
         "dependencies": {
+          "FribaScore.Application": "[1.0.0, )",
+          "FribaScore.Contracts": "[1.0.0, )",
           "LanguageExt.Core": "[4.4.9, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[10.0.5, )",
           "Microsoft.AspNetCore.OpenApi": "[10.0.5, )",
-          "Microsoft.EntityFrameworkCore": "[10.0.5, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.1, )",
           "Scalar.AspNetCore": "[2.9.0, )"
         }
+      },
+      "fribascore.application": {
+        "type": "Project",
+        "dependencies": {
+          "FribaScore.Contracts": "[1.0.0, )",
+          "LanguageExt.Core": "[4.4.9, )",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[10.0.5, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.5, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.1, )"
+        }
+      },
+      "fribascore.contracts": {
+        "type": "Project"
       }
     }
   }

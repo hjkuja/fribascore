@@ -1,8 +1,8 @@
+using FribaScore.Application.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using FribaScore.Api.Models;
 
-namespace FribaScore.Api.Data;
+namespace FribaScore.Application.Database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext(options)
 {

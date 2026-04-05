@@ -1,4 +1,4 @@
-namespace FribaScore.Api.Models;
+namespace FribaScore.Application.Models;
 
 public class Player
 {
