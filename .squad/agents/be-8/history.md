@@ -51,6 +51,12 @@
 - **Build result:** All 3 projects build with 0 errors, 0 warnings.
 - **Key Pattern:** For Minimal API endpoint naming, always use unique `WithName()` strings globally — the simplest approach is appending the resource name to the method name.
 
+### 2026-04-05 — Docs: API Overview Rewrite
+
+- Rewrote `docs/api/overview.md` from placeholder "Not yet started" to an accurate reference doc reflecting the full 3-project scaffold.
+- Sections covered: status, tech stack table, project structure with dependency flow, architecture patterns (Result<T>, service layer, DTOs, mapping), full endpoint reference with auth requirements, auth section (cookie-based Identity, issue #26 not yet implemented), local dev setup (connection string, Scalar UI, OpenAPI JSON URLs), CI notes (api.yml, --locked-mode).
+- Removed stale content: JWT references, sync queue section, placeholder TBDs.
+
 ### 2026-04-05 — Issue #25: 3-Project Service Layer Split
 
 - **Pattern adopted:** Api / Application / Contracts split modelled on hjkuja/ShouldDo reference repo.

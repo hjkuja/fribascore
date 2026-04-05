@@ -1,70 +1,108 @@
 # API Overview
 
-This document describes the planned .NET backend API for FribaScore.
+Backend API for FribaScore — disc golf scorecard app.
 
 ## Status
 
-⬜ Not yet started. The backend will be scaffolded in a `api/` directory at the monorepo root.
+🟡 **Scaffolded, in progress.** 3-project solution structure is in place, all endpoints are mapped, service layer is wired up. Auth (issue #26) is not yet implemented.
 
-## Technology
+## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Framework | ASP.NET Core Web API |
-| Language | C# |
-| Auth | To be decided (JWT or ASP.NET Core Identity) |
-| Database | To be decided |
+| Framework | ASP.NET Core 10 Minimal API |
+| Language | C# (.NET 10) |
+| Auth | ASP.NET Core Identity — HttpOnly cookie, SameSite=Strict (not JWT) |
+| Database | PostgreSQL via EF Core + Npgsql |
+| Result pattern | `LanguageExt.Core` — `Result<T>` / `.Match()` |
+| OpenAPI | Built-in `AddOpenApi()` + Scalar UI |
+| Solution format | SLNX (`fribascore.slnx`) |
 
-## Base URL
+## Project Structure
 
-- Development: `https://localhost:5001`
-- Production: TBD
+```
+api/
+  Directory.Build.props          — NuGet lock files, shared MSBuild props
+  src/
+    FribaScore.Api/              — Program.cs, endpoint groups, ApiResults.cs
+    FribaScore.Application/      — services, interfaces, AppDbContext, EF migrations, mapping
+    FribaScore.Contracts/        — request/response DTOs, custom exceptions (no ASP.NET deps)
+  test/
+    FribaScore.Api.Tests.Unit/
+    FribaScore.Api.Tests.Integration/
+```
 
-The frontend reads the API base URL from a `VITE_API_URL` environment variable.
+**Project dependencies:**
+- `Api` → `Application` → `Contracts`
+- `Api` has no direct EF Core or Npgsql references; those are encapsulated in `Application`.
 
-## Authentication
+## Architecture Patterns
 
-All endpoints except `GET /courses` require authentication. Auth is handled via bearer tokens (JWT).
+**Service layer:** Business logic lives in `Application` services. Services return `Result<T>` (from `LanguageExt.Common`). Failures are expressed as typed exceptions (`NotFoundException`, `BadRequestException`) wrapped inside `Result<T>`.
 
-| Endpoint | Description |
-|----------|-------------|
-| `POST /auth/login` | Sign in and receive a JWT |
-| `POST /auth/logout` | Invalidate the current session |
-| `GET /auth/me` | Get the currently authenticated user |
+**Endpoints:** Each resource is a `MapGroup()` route group. Endpoints call the service and use `.Match()` to map `Result<T>` to HTTP responses via `ToProblemResult()` for errors and `TypedResults` for success.
 
-## Courses
+**DTOs:** All request/response types are in `Contracts`. Entity-to-response mapping is done via extension methods in `Application/Mapping/`.
 
-Courses are managed server-side. The frontend syncs them down on connect.
+**Validation:** Input validation happens in the service layer before any DB write.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
+## Endpoints
+
+### Courses — public
+
+| Method | Path | Description |
+|--------|------|-------------|
 | `GET` | `/courses` | List all courses |
-| `GET` | `/courses/{id}` | Get a single course with full hole data |
+| `GET` | `/courses/{id}` | Get a single course with hole data |
 
-## Players
+### Players — auth required
 
-Players are user-owned and synced bidirectionally.
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/players` | List all players for the authenticated user |
-| `POST` | `/players` | Create a new player |
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/players` | List players for the authenticated user |
+| `POST` | `/players` | Create a player |
 | `PUT` | `/players/{id}` | Update a player |
 | `DELETE` | `/players/{id}` | Delete a player |
 
-## Rounds
+### Rounds — auth required
 
-Rounds are created locally and uploaded when online.
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
+| Method | Path | Description |
+|--------|------|-------------|
 | `GET` | `/rounds` | List rounds for the authenticated user |
-| `POST` | `/rounds` | Upload a completed round |
+| `POST` | `/rounds` | Create a round (immutable after creation — no PUT) |
 
-> Rounds are considered immutable once created. There is no `PUT /rounds/{id}`.
+### Auth — issue [#26](https://github.com/hjkuja/fribascore/issues/26), not yet implemented
 
-## Sync
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/auth/login` | Sign in — sets HttpOnly cookie |
+| `POST` | `/auth/logout` | Sign out — clears cookie |
+| `GET` | `/auth/me` | Get current authenticated user |
 
-The frontend uses a sync queue to batch and retry failed operations. The backend does not have a dedicated sync endpoint — operations are sent as individual requests against the entity endpoints above.
+## Authentication
 
-See [Backend Sync Spec](../specs/backend-sync.md) for the full sync strategy.
+Uses **ASP.NET Core Identity** with **HttpOnly cookie sessions** (no JWT). Cookie is `SameSite=Strict`. All non-public endpoints use `RequireAuthorization()`.
+
+## Local Development
+
+**Prerequisites:** .NET 10 SDK, PostgreSQL running locally.
+
+**Connection string:** Set in `api/src/FribaScore.Api/appsettings.Development.json` (not committed).
+
+```bash
+cd api/src/FribaScore.Api
+dotnet run
+```
+
+| URL | Description |
+|-----|-------------|
+| `https://localhost:5001/scalar` | Scalar OpenAPI UI (dev only) |
+| `https://localhost:5001/openapi/v1.json` | Raw OpenAPI JSON |
+
+## CI
+
+Separate workflow: `.github/workflows/api.yml`
+
+- Triggered on push/PR to `main` for changes under `api/`
+- Runs: `dotnet restore --locked-mode`, `dotnet build`, `dotnet test`
+- NuGet lock files are committed; `RestorePackagesWithLockFile=true` is set in `api/Directory.Build.props`
