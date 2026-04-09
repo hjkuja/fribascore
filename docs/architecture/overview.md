@@ -13,14 +13,45 @@ FribaScore is an offline-first disc golf scorecard web app built as a monorepo. 
 
 | Layer | Technology |
 |-------|------------|
-| Framework | React 19 (functional components, hooks) |
-| Language | TypeScript (strict mode) |
+| Frontend framework | React 19 (functional components, hooks) |
+| Frontend language | TypeScript (strict mode) |
 | Build tool | Vite 7 + Babel React Compiler |
 | Routing | React Router DOM v7 |
 | Local storage | IndexedDB via `idb` v8 |
 | Package manager | Bun |
 | Linting | ESLint 9 with TypeScript + React Hooks plugins |
-| Testing | Bun test runner + React Testing Library + happy-dom |
+| Frontend testing | Bun test runner + React Testing Library + happy-dom |
+| Backend framework | ASP.NET Core 10 (Minimal APIs) |
+| Backend language | C# (file-scoped namespaces, top-level statements) |
+| Database | PostgreSQL via EF Core + Npgsql |
+| Auth | ASP.NET Core Identity — HttpOnly cookie sessions |
+| OpenAPI | Built-in .NET `AddOpenApi()` + Scalar UI |
+| Backend CI | GitHub Actions (`.github/workflows/api.yml`) |
+
+## Monorepo Layout
+
+The repo is a monorepo containing both the frontend and backend.
+
+```
+fribascore/
+  ui/                       # React frontend (Bun + Vite)
+  api/                      # ASP.NET Core backend
+    src/
+      FribaScore.Api/
+      FribaScore.Application/
+      FribaScore.Contracts/
+    test/
+      FribaScore.Api.Tests.Unit/
+      FribaScore.Api.Tests.Integration/
+  docs/                     # Architecture docs
+  .github/
+    workflows/
+      ci.yml                # Frontend CI
+      api.yml               # Backend CI
+  fribascore.slnx           # .NET solution file (includes all 5 projects)
+```
+
+Frontend work lives entirely under `ui/`. Backend work lives entirely under `api/`. Shared docs live under `docs/`.
 
 ## Frontend Structure (`ui/`)
 
@@ -55,3 +86,58 @@ A debug/admin page is only available in development builds. It provides tools fo
 
 ### Client-side IDs
 All entities are assigned unique IDs on the client at creation time. This supports fully offline creation of rounds and players without any server involvement.
+
+---
+
+## Backend
+
+### Project Structure
+
+The backend is a 3-project ASP.NET Core 10 solution under `api/`:
+
+| Project | Role |
+|---------|------|
+| `FribaScore.Api` | HTTP boundary — Minimal API endpoints, middleware, `Program.cs` |
+| `FribaScore.Application` | Business logic — services, EF Core `DbContext`, DI registration |
+| `FribaScore.Contracts` | Shared types — DTOs (`record`s), custom exceptions. No framework deps |
+
+**Dependency rule:** `Api` → `Application` → `Contracts`. `Contracts` has zero project references.
+
+### Service Layer Pattern
+
+Endpoints inject service interfaces — never `DbContext` directly:
+
+```
+ICourseService  ←  CourseEndpoints
+IPlayerService  ←  PlayerEndpoints
+IRoundService   ←  RoundEndpoints
+```
+
+Service interfaces are defined in `Application/Services/Interfaces/`. Implementations live alongside them in `Application/Services/`. DI wiring is encapsulated in `ServiceExtensions` — `Program.cs` calls `services.AddApplicationServices()`.
+
+### Result Pattern
+
+Services return `Result<T>` from `LanguageExt.Common`. Endpoint handlers use `.Match()` with `ToProblemResult()`:
+
+```csharp
+return (await courseService.GetAllAsync())
+    .Match(ok => TypedResults.Ok(ok), ex => ex.ToProblemResult());
+```
+
+`ToProblemResult(this Exception)` is an extension method in `ApiResults.cs` in the Api project. It maps `CustomException` subclasses to the correct HTTP problem response.
+
+### Auth
+
+ASP.NET Core Identity with **HttpOnly cookie sessions** (`SameSite=Strict`, `SecurePolicy=Always`). JWT is explicitly not used. Tokens are never stored in `localStorage`. All mutation endpoints require `RequireAuthorization()`.
+
+### Database
+
+PostgreSQL via EF Core + Npgsql. `AppDbContext` lives in `FribaScore.Application`. NuGet lockfiles are enforced via `RestorePackagesWithLockFile=true` in `Directory.Build.props`.
+
+### OpenAPI
+
+Built-in .NET `AddOpenApi()` (no Swashbuckle). Spec available at `/openapi/v1.json`. Scalar UI served for browser exploration. Endpoint handlers use `TypedResults` with `Results<Ok<T>, ProblemHttpResult>` return types so the framework can infer response schemas.
+
+### Solution File
+
+`fribascore.slnx` at the repo root includes all 5 projects (3 app + 2 test). Use this for all `dotnet build` and `dotnet test` invocations.

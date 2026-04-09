@@ -170,3 +170,16 @@ expect(dateElement.textContent).toMatch(/\d{2}[.:]\d{2}/);
 
 <!-- Append new learnings below. -->
 
+### 2026-04-05: .NET Test Project Reference Wiring Pattern
+
+**Context:** After BE-8 split the API into three projects (Api, Application, Contracts), the test projects had stale or missing `<ProjectReference>` entries.
+
+**Pattern:**
+- **Unit tests** need references to `Application` (mock service interfaces) and `Contracts` (DTOs/exceptions). They do NOT need to reference `Api` directly.
+- **Integration tests** already reference `Api`; they additionally need `Application` and `Contracts` for full test coverage.
+- Paths from `api/test/<ProjectName>/` to `api/src/<ProjectName>/` always follow: `..\..\src\<ProjectName>\<ProjectName>.csproj`.
+
+**Restore/build command:** `dotnet restore fribascore.slnx` / `dotnet build fribascore.slnx` from repo root (the `api/` folder has no solution file — solution lives at repo root as `.slnx`).
+
+**Result:** Restore and build both succeeded cleanly. Committed on `squad/25-api-scaffold`.
+

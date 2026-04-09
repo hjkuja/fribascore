@@ -23,6 +23,9 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Visual Studio files
+.vs/
+
 # Temporary dev files
 dev/
 

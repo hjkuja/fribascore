@@ -146,21 +146,21 @@ jobs:
             if (!assignedMember) {
               for (const member of members) {
                 const role = member.role.toLowerCase();
-                if ((role.includes('frontend') || role.includes('ui')) &&
-                    (issueText.includes('ui') || issueText.includes('frontend') ||
-                     issueText.includes('css') || issueText.includes('component') ||
-                     issueText.includes('button') || issueText.includes('page') ||
-                     issueText.includes('layout') || issueText.includes('design'))) {
-                  assignedMember = member;
-                  triageReason = 'Issue relates to frontend/UI work';
-                  break;
-                }
                 if ((role.includes('backend') || role.includes('api') || role.includes('server')) &&
                     (issueText.includes('api') || issueText.includes('backend') ||
                      issueText.includes('database') || issueText.includes('endpoint') ||
                      issueText.includes('server') || issueText.includes('auth'))) {
                   assignedMember = member;
                   triageReason = 'Issue relates to backend/API work';
+                  break;
+                }
+                if ((role.includes('frontend') || role.includes('ui')) &&
+                    (issueText.includes('ui') || issueText.includes('frontend') ||
+                     issueText.includes('css') || issueText.includes('component') ||
+                     issueText.includes('button') ||
+                     issueText.includes('layout') || issueText.includes('design'))) {
+                  assignedMember = member;
+                  triageReason = 'Issue relates to frontend/UI work';
                   break;
                 }
                 if ((role.includes('test') || role.includes('qa') || role.includes('quality')) &&
