@@ -8,8 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("FribaConnection")
+    ?? throw new InvalidOperationException("Connection string 'FribaConnection' not found.");
 
 builder.Services.AddApplicationServices(connectionString);
 
