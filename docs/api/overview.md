@@ -119,7 +119,7 @@ If FribaScore expands to support multi-app scenarios or federated identity (for 
 
 ## Local Development
 
-**Prerequisites:** .NET 10 SDK, PostgreSQL running locally.
+**Prerequisites:** .NET 10 SDK, PostgreSQL running locally, Docker (for integration tests).
 
 **Connection string:** Set in `api/src/FribaScore.Api/appsettings.Development.json` (not committed).
 
@@ -132,6 +132,29 @@ dotnet run
 |-----|-------------|
 | `https://localhost:5001/scalar` | Scalar OpenAPI UI (dev only) |
 | `https://localhost:5001/openapi/v1.json` | Raw OpenAPI JSON |
+
+## Testing
+
+### Integration Tests
+
+Integration tests use **Testcontainers** to run PostgreSQL containers. This provides a production-equivalent test environment without mocking the database layer.
+
+**Requirements:**
+- Docker must be running locally
+- Testcontainers handles container setup and teardown automatically
+
+**Running integration tests:**
+```bash
+dotnet test api/test/FribaScore.Api.Tests.Integration
+```
+
+The test factory (`AuthApiFactory`, etc.) creates a `WebApplicationFactory<ApiAssemblyMarker>` that:
+1. Spins up a PostgreSQL container via Testcontainers
+2. Applies all EF Core migrations to create a production schema
+3. Provides helper methods to seed test data and create HTTP clients
+4. Cleans up the container after tests complete
+
+See `docs/development/testing.md` for more details.
 
 ## CI
 

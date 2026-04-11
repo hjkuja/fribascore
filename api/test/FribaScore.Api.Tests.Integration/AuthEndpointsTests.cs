@@ -2,14 +2,22 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using FribaScore.Api.Tests.Integration.Infrastructure;
+
 namespace FribaScore.Api.Tests.Integration;
 
-public sealed class AuthEndpointsTests
+public sealed class AuthEndpointsTests : IClassFixture<PostgresDatabaseFixture>
 {
+    private readonly PostgresDatabaseFixture fixture;
+
+    public AuthEndpointsTests(PostgresDatabaseFixture fixture)
+    {
+        this.fixture = fixture;
+    }
+
     [Fact]
     public async Task Login_WithValidCredentials_ReturnsOkAndSetsStrictHttpOnlyCookie()
     {
-        using var factory = new AuthApiFactory();
+        using var factory = new AuthApiFactory(fixture.ConnectionString);
         using var client = factory.CreateHttpsClient();
 
         var username = $"qt3-{Guid.NewGuid():N}";
@@ -28,7 +36,7 @@ public sealed class AuthEndpointsTests
     [Fact]
     public async Task Login_WithWrongPassword_ReturnsUnauthorizedAndDoesNotSetCookie()
     {
-        using var factory = new AuthApiFactory();
+        using var factory = new AuthApiFactory(fixture.ConnectionString);
         using var client = factory.CreateHttpsClient();
 
         var username = $"qt3-{Guid.NewGuid():N}";
@@ -44,9 +52,8 @@ public sealed class AuthEndpointsTests
     [Fact]
     public async Task Login_WithBlankCredentials_ReturnsBadRequestWithValidationErrors()
     {
-        using var factory = new AuthApiFactory();
+        using var factory = new AuthApiFactory(fixture.ConnectionString);
         using var client = factory.CreateHttpsClient();
-        await factory.InitializeDatabaseAsync();
 
         var response = await client.PostAsJsonAsync("/auth/login", new { username = "   ", password = "" });
 
@@ -62,9 +69,8 @@ public sealed class AuthEndpointsTests
     [Fact]
     public async Task Logout_WhenAnonymous_ReturnsUnauthorized()
     {
-        using var factory = new AuthApiFactory();
+        using var factory = new AuthApiFactory(fixture.ConnectionString);
         using var client = factory.CreateHttpsClient();
-        await factory.InitializeDatabaseAsync();
 
         var response = await client.PostAsync("/auth/logout", content: null);
 
@@ -74,7 +80,7 @@ public sealed class AuthEndpointsTests
     [Fact]
     public async Task Logout_WhenAuthenticated_ExpiresTheAuthCookie()
     {
-        using var factory = new AuthApiFactory();
+        using var factory = new AuthApiFactory(fixture.ConnectionString);
         using var client = factory.CreateHttpsClient();
 
         var username = $"qt3-{Guid.NewGuid():N}";
@@ -106,9 +112,8 @@ public sealed class AuthEndpointsTests
     [Fact]
     public async Task Me_WhenAnonymous_ReturnsUnauthorized()
     {
-        using var factory = new AuthApiFactory();
+        using var factory = new AuthApiFactory(fixture.ConnectionString);
         using var client = factory.CreateHttpsClient();
-        await factory.InitializeDatabaseAsync();
 
         var response = await client.GetAsync("/auth/me");
 
@@ -118,7 +123,7 @@ public sealed class AuthEndpointsTests
     [Fact]
     public async Task Me_WhenAuthenticated_ReturnsCurrentUserIdAndUsernameOnly()
     {
-        using var factory = new AuthApiFactory();
+        using var factory = new AuthApiFactory(fixture.ConnectionString);
         using var client = factory.CreateHttpsClient();
 
         var username = $"qt3-{Guid.NewGuid():N}";
@@ -154,3 +159,4 @@ public sealed class AuthEndpointsTests
         return authCookie;
     }
 }
+
