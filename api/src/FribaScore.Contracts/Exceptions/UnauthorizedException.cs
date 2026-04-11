@@ -1,5 +1,8 @@
 namespace FribaScore.Contracts.Exceptions;
 
+/// <summary>
+/// Represents a failure caused by a missing or invalid authenticated user context.
+/// </summary>
 public class UnauthorizedException(string message = "Authentication is required.")
     : CustomException(
         "Unauthorized",

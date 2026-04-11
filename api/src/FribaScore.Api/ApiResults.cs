@@ -2,8 +2,16 @@ using FribaScore.Contracts.Exceptions;
 
 namespace FribaScore.Api;
 
+/// <summary>
+/// Converts application exceptions to RFC 7807 problem responses.
+/// </summary>
 public static class ApiResults
 {
+    /// <summary>
+    /// Converts an exception to an HTTP problem response.
+    /// </summary>
+    /// <param name="exception">The exception to convert.</param>
+    /// <returns>A problem response representing the exception.</returns>
     public static IResult ToProblemResult(this Exception exception)
     {
         if (exception is not CustomException customException)

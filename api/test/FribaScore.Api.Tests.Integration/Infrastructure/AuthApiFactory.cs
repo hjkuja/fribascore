@@ -1,4 +1,5 @@
 using System.Net.Http;
+using FribaScore.Api;
 using FribaScore.Application.Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,10 +13,18 @@ using Microsoft.Extensions.Logging;
 
 namespace FribaScore.Api.Tests.Integration.Infrastructure;
 
-public sealed class AuthApiFactory : WebApplicationFactory<Program>
+/// <summary>
+/// Creates a test host for auth integration tests.
+/// </summary>
+public sealed class AuthApiFactory : WebApplicationFactory<ApiAssemblyMarker>
 {
+    // Keep the connection open for the lifetime of the factory so the in-memory
+    // SQLite database survives across DI scopes and HTTP requests.
     private readonly SqliteConnection connection = new("Data Source=:memory:");
 
+    /// <summary>
+    /// Initializes a new integration test factory instance.
+    /// </summary>
     public AuthApiFactory()
     {
         connection.Open();
@@ -23,7 +32,6 @@ public sealed class AuthApiFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("Development");
         builder.ConfigureLogging(logging => logging.ClearProviders());
         builder.ConfigureServices(services =>
         {
@@ -36,6 +44,10 @@ public sealed class AuthApiFactory : WebApplicationFactory<Program>
         });
     }
 
+    /// <summary>
+    /// Creates an HTTPS test client with cookie handling enabled.
+    /// </summary>
+    /// <returns>A configured test HTTP client.</returns>
     public HttpClient CreateHttpsClient()
     {
         return CreateClient(new WebApplicationFactoryClientOptions
@@ -46,6 +58,9 @@ public sealed class AuthApiFactory : WebApplicationFactory<Program>
         });
     }
 
+    /// <summary>
+    /// Ensures that the SQLite test database schema exists.
+    /// </summary>
     public async Task InitializeDatabaseAsync()
     {
         using var scope = Services.CreateScope();
@@ -53,6 +68,12 @@ public sealed class AuthApiFactory : WebApplicationFactory<Program>
         await dbContext.Database.EnsureCreatedAsync();
     }
 
+    /// <summary>
+    /// Seeds a user for authentication tests.
+    /// </summary>
+    /// <param name="username">The username to create.</param>
+    /// <param name="password">The password to hash and store with Identity.</param>
+    /// <returns>The created identity user.</returns>
     public async Task<IdentityUser> SeedUserAsync(string username, string password)
     {
         await InitializeDatabaseAsync();

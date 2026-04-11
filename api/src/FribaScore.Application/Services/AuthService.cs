@@ -9,10 +9,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FribaScore.Application.Services;
 
+/// <summary>
+/// Implements ASP.NET Core Identity-backed authentication operations for the API.
+/// </summary>
 public class AuthService(
     UserManager<IdentityUser> userManager,
     SignInManager<IdentityUser> signInManager) : IAuthService
 {
+    /// <inheritdoc />
     public async Task<Result<AuthUserResponse>> LoginAsync(LoginRequest request)
     {
         try
@@ -60,6 +64,7 @@ public class AuthService(
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<bool>> LogoutAsync()
     {
         try
@@ -73,6 +78,7 @@ public class AuthService(
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<AuthUserResponse>> GetCurrentUserAsync(ClaimsPrincipal principal)
     {
         try
