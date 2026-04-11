@@ -76,4 +76,20 @@
 - **Build result:** All 3 source projects build with 0 errors, 0 warnings.
 - **Test project references:** Both test projects (`FribaScore.Api.Tests.Unit`, `FribaScore.Api.Tests.Integration`) updated to reference `FribaScore.Application` (for service interfaces, models, DbContext) and `FribaScore.Contracts` (for DTOs, exceptions). Unit tests do NOT reference `FribaScore.Api` to keep them fast (no ASP.NET hosting overhead). Integration tests reference all three to boot full app via `WebApplicationFactory<Program>`. Build verified: 0 errors, 0 warnings.
 
+### 2026-04-09 — Docs: Authentication Strategy (Phase 1 + OpenIddict Expansion Path)
+
+- **Created:** `docs/specs/authentication.md` — comprehensive spec covering Phase 1 (HttpOnly cookies) and Phase 2+ (OpenIddict OIDC expansion).
+- **Enhanced:** `docs/api/overview.md` — expanded Auth section to describe HttpOnly strategy and OpenIddict future path. Now clearly states "no JWT, no localStorage".
+- **Enhanced:** `docs/architecture/overview.md` — updated Auth subsection to describe phased approach.
+- **Updated:** `.squad/decisions.md` — added formal decision record for Phase 1 + Phase 2+ expansion path.
+- **Key pattern:** Phase 1 (HttpOnly cookies) chosen for single-app simplicity and offline resilience. Phase 2+ (OpenIddict) is a non-breaking expansion layer for multi-app/federated scenarios. Same `AppUser` and `AppDbContext` store all auth data — no migration needed.
+- **Security properties documented:** HttpOnly, Secure, SameSite=Strict, encryption, server-side validation. Explicit note: cookies survive app restarts without client-side logic (key for offline-first design).
+
+### 2026-04-11 — Docs: Auth revision guardrails
+
+- **Issue alignment:** Phase 1 auth docs should mirror issue #26 closely enough to avoid contract drift. `POST /auth/login`, `POST /auth/logout`, and `GET /auth/me` are the only documented Phase 1 auth endpoints; `/auth/me` returns `id` + `username`.
+- **Planning safety:** Future auth docs should stay at the level of triggers, constraints, and open questions. Avoid pre-committing packages, providers, tables, endpoints, or token flows before a separate Phase 2 planning issue exists.
+- **Key files:** `docs/api/overview.md`, `docs/architecture/auth.md`, `docs/specs/authentication.md`, `.squad/decisions/inbox/ISSUE-DRAFT-phase2-oidc.md`, `.squad/decisions.md`.
+- **Reusable pattern:** For phased documentation, keep the current phase tied to the active issue contract and keep later phases explicitly planning-only.
+
 

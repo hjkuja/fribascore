@@ -74,6 +74,44 @@ describe("HistoryPage", () => {
 
 <!-- Append new learnings below. -->
 
+### 2026-04-11: Auth docs review gate
+
+**Review target:** LD-7's auth documentation cleanup and the Phase 2 OIDC/SSO planning issue draft.
+
+**Finding:** The docs improved Phase 1 vs Phase 2 separation, and the future issue draft is close to planning-ready, but the package/path language still needs one more safety pass before approval. Future-facing text should stay at "candidate under evaluation" level; avoid unvalidated claims such as guaranteed coexistence details or no-migration assumptions. Also keep Phase 1 concrete artifacts aligned with Issue #26 so current implementation scope stays crisp.
+
+**Blocking examples noted during review:**
+- `docs/specs/authentication.md` and `docs/architecture/auth.md` still describe OpenIddict as a leading/current candidate with coexistence wording that reads stronger than a pure readiness note.
+- `.squad/decisions.md` is stronger still (`Framework addition: OpenIddict`, `No storage migration needed`), which undermines the docs' softer planning stance.
+- `docs/architecture/auth.md` says `GET /auth/me` returns `{ userId, username, email }`, while Issue `#26` currently scopes it to current user info `(id, username)`.
+
+**Key file paths:**
+- `docs/specs/authentication.md`
+- `docs/architecture/auth.md`
+- `docs/api/overview.md`
+- `docs/architecture/overview.md`
+- `.squad/decisions/inbox/ISSUE-DRAFT-phase2-oidc.md`
+- `.squad/decisions.md`
+
+### 2026-04-11: Auth docs re-review approved
+
+**Review target:** BE-8's revised auth docs and the future auth issue draft.
+
+**Verdict:** Approve. The revision clears the three review gates:
+- **Factual safety:** Future auth stays at readiness/planning level. The docs no longer commit to a package or promise a migration-free Phase 2 path.
+- **Scope clarity:** Phase 1 remains concretely scoped to Issue `#26` (`POST /auth/login`, `POST /auth/logout`, `GET /auth/me` with current user info `id` + `username`).
+- **Issue hygiene:** `.squad/decisions/inbox/ISSUE-DRAFT-phase2-oidc.md` is now clearly blocked by `#26`, planning-only, and explicitly out of implementation scope.
+
+**Notes:** `docs/architecture/auth.md` still uses "coexist" language as a design goal, but it now reads as a constraint for future planning rather than a validated implementation promise.
+
+**Key file paths:**
+- `docs/specs/authentication.md`
+- `docs/architecture/auth.md`
+- `docs/api/overview.md`
+- `docs/architecture/overview.md`
+- `.squad/decisions/inbox/ISSUE-DRAFT-phase2-oidc.md`
+- `.squad/decisions.md`
+
 ### Issue #10 — DateTime Testing Suite (2026-04-03) — ✅ COMPLETE
 
 **Status:** All 10 tests passing and committed to `squad/10-history-time-of-day` branch

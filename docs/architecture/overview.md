@@ -128,7 +128,9 @@ return (await courseService.GetAllAsync())
 
 ### Auth
 
-ASP.NET Core Identity with **HttpOnly cookie sessions** (`SameSite=Strict`, `SecurePolicy=Always`). JWT is explicitly not used. Tokens are never stored in `localStorage`. All mutation endpoints require `RequireAuthorization()`.
+**Phase 1 (current plan):** ASP.NET Core Identity with **HttpOnly cookie authentication** (`SameSite=Strict`, secure cookies in production). Issue #26 defines the Phase 1 auth surface: `POST /auth/login`, `POST /auth/logout`, and `GET /auth/me`. JWT is explicitly not used. Tokens are never stored in `localStorage`, and `/auth/me` returns the authenticated user's `id` and `username`.
+
+**Phase 2+ (readiness path):** If FribaScore later needs multi-app federation, external identity providers, or token-based access, the Phase 1 design leaves room to evaluate a future auth expansion. That remains a planning direction only; packages, providers, endpoints, and flows are intentionally undecided.
 
 ### Database
 

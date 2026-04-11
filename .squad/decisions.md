@@ -52,6 +52,30 @@ Canonical CSS custom property names established in `ui/src/styles/design-system.
 
 **Rationale:** Aligned with .NET 10 conventions, team preferences (confirmed 2026-04-05), and minimal external dependencies.
 
+### Authentication Strategy: Phase 1 + Future Auth Readiness (BE-8, 2026-04-09)
+
+**Status:** Active (Phase 1)
+**Scope:** All authentication flows in FribaScore
+
+**Phase 1 Decision:**
+- **Framework:** ASP.NET Core Identity
+- **Session model:** HttpOnly cookies (`SameSite=Strict`, `Secure=Always`)
+- **Token storage:** No JWT; no `localStorage`. Cookies only.
+- **Rationale:** Simplest, most secure model for single-app use case. Works offline (cookies survive restarts). Battle-tested.
+
+**Phase 2+ Readiness Direction:**
+- **When:** Only if multi-app federation, external identity, or token-based access is validated as a real product need
+- **Constraint:** Current HttpOnly cookie users must not be broken by later auth expansion work
+- **Planning rule:** Packages, providers, endpoints, tables, and token flows are not committed yet
+- **Goal:** Keep Phase 1 compatible with future evaluation work without prematurely choosing an implementation path
+
+**Artifacts:**
+- `docs/specs/authentication.md` — full strategy doc with phase comparison and security properties
+- `docs/api/overview.md#authentication` — implementation details for Phase 1 (includes Phase 2+ callout)
+- `docs/architecture/overview.md#auth` — phased auth description
+
+**Related Issue:** #26 (Auth endpoint implementation — not yet started)
+
 ### Bun Module Mock Isolation Pattern (QT-3, 2026-04-03)
 
 **Status:** Recommended for team adoption  
