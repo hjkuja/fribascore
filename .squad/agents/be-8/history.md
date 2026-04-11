@@ -98,3 +98,18 @@
 - **Reference:** BE-8 decision record now part of master decisions.md: "Authentication: Phase 1 + Future OIDC Readiness (LD-7 + BE-8, 2026-04-09)". Reusable pattern: document both phases upfront, keep Phase 2 at decision-gate level only.
 
 
+### 2026-04-11 — Feature: Testcontainers PostgreSQL for Integration Tests
+
+- **Branch:** `feature/testcontainers-pg-integration` (based on `feature/auth-endpoints-26`)
+- **Motivation:** SQLite in-memory provider lacks PostgreSQL-specific behavior (JSON operators, identity columns, constraints). Using Testcontainers gives provider fidelity and catches real migration issues.
+- **SQLite removal:** Dropped `Microsoft.EntityFrameworkCore.Sqlite` from both `FribaScore.Application` and the integration test project. Removed provider sniffing from `ServiceExtensions.cs` — `AddDbContext` now always uses Npgsql.
+- **IDesignTimeDbContextFactory:** Created `AppDbContextDesignTimeFactory` in `FribaScore.Application/Database/` so `dotnet ef` CLI can resolve `AppDbContext` without running the full host. Uses a local dev connection string (not production values).
+- **EF CLI tooling:** Added `Microsoft.EntityFrameworkCore.Design` to `FribaScore.Api.csproj` (with `PrivateAssets=all`) — required for the startup project when running `dotnet ef migrations add`.
+- **InitialCreate migration:** Generated via `dotnet ef migrations add InitialCreate --project FribaScore.Application --startup-project FribaScore.Api --output-dir Database/Migrations`. Captures full Identity schema + app entities.
+- **Testcontainers:** Added `Testcontainers.PostgreSql` 4.11.0 to integration test project. `PostgresDatabaseFixture : IAsyncLifetime` starts a container once per test class, runs `MigrateAsync`, then disposes. Each test gets a fresh `AuthApiFactory(fixture.ConnectionString)` — container reuse keeps tests fast.
+- **AuthApiFactory rewrite:** No longer holds an open `SqliteConnection`. Constructor takes `string connectionString`, injects it via `IConfiguration` (`ConfigureAppConfiguration`). `InitializeDatabaseAsync` calls `MigrateAsync` (idempotent) instead of `EnsureCreatedAsync`.
+- **AuthEndpointsTests update:** Class now implements `IClassFixture<PostgresDatabaseFixture>` — fixture injected via constructor and passed to each `new AuthApiFactory(fixture.ConnectionString)`.
+- **Key lesson:** When adding `dotnet ef` CLI support, the *startup project* (not the migrations project) needs `Microsoft.EntityFrameworkCore.Design`. The migrations project needs it too, but only at build time (already had it). Keep `PrivateAssets=all` on both to avoid leaking the design-time assembly into production output.
+- **Key lesson:** `MigrateAsync` is an extension method from `Microsoft.EntityFrameworkCore` namespace — add `using Microsoft.EntityFrameworkCore;` in any file that calls it, even if EF is a transitive reference.
+- **Build result:** 0 errors, 0 warnings.
+
