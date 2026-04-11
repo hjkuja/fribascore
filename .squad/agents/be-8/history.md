@@ -92,4 +92,9 @@
 - **Key files:** `docs/api/overview.md`, `docs/architecture/auth.md`, `docs/specs/authentication.md`, `.squad/decisions/inbox/ISSUE-DRAFT-phase2-oidc.md`, `.squad/decisions.md`.
 - **Reusable pattern:** For phased documentation, keep the current phase tied to the active issue contract and keep later phases explicitly planning-only.
 
+### 2026-04-11 — Decision merges complete
+
+- **Scribe action:** All decision inbox items (14 files) merged to `.squad/decisions.md`: Aspire deferral decision, Phase 1+2 auth strategy, auth docs phase boundaries, QT-3 review approval, work sequencing, identity storage boundary, PostgreSQL schema design, phase boundary clarity enforcement. Inbox files deleted. `.squad/orchestration-log/2026-04-11T19-37-51-ld-7.md` created; `.squad/log/2026-04-11T19-37-51-aspire-issue-roadmap.md` created.
+- **Reference:** BE-8 decision record now part of master decisions.md: "Authentication: Phase 1 + Future OIDC Readiness (LD-7 + BE-8, 2026-04-09)". Reusable pattern: document both phases upfront, keep Phase 2 at decision-gate level only.
+
 

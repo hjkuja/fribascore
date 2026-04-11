@@ -17,4 +17,7 @@
 
 - **2026-04:** Created `.github/workflows/api.yml` on branch `squad/25-api-scaffold`. Separate from `ci.yml`; triggers on `api/**` and `.github/workflows/api.yml` paths only. Uses `actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9` (#v4) with `cache: 'nuget'` and `cache-dependency-path: '**/packages.lock.json'`. Steps: restore `--locked-mode` → build `--no-restore -c Release` → test `--no-build -c Release`, all against `fribascore.slnx` at repo root. All third-party actions pinned to full commit SHA. `permissions: contents: read` (least privilege).
 
-<!-- Append new learnings below. -->
+- **2026-04:** Assessed Aspire from dev tooling perspective. **Decision: Defer adoption to Phase 2.** FribaScore Phase 1 backend work does not require Aspire. Aspire adds Docker as hard dependency and 2–4 hours setup cost for immediate gain of single orchestration point (not yet painful with 2 services). Recommendation: Continue Phase 1 without Aspire; revisit when multi-service architecture emerges (Phase 2, e.g., worker processes, Python ML service). Aspire adoption has zero impact on existing code and can be added anytime. Full assessment written to `.squad/decisions/inbox/ops-9-aspire-assessment.md`. Clean monorepo structure (3-project backend, Bun frontend) works well and remains Aspire-compatible for future migration.
+
+- **2026-04-11:** Decision merges complete. Scribe merged OPS-9's Aspire assessment from decision inbox to `.squad/decisions.md` under "Aspire Orchestration: Defer to Phase 2 (LD-7, 2026-04-11)". Assessment is now part of team decisions record. All decision inbox items (14 files) merged; inbox deleted.
+

@@ -21,6 +21,21 @@
 - Run: `bun test` (all), `bun test --watch`, `bun test --coverage`, `bun test src/components/Foo`
 - Typecheck: `bun run typecheck` covers both `tsconfig.app.json` and `tsconfig.test.json`
 
+## Core Context
+
+### Early Testing Learnings (2026-04-03 through 2026-04-05)
+
+**Bun Module Mock Isolation:**
+Bun's `mock.module()` creates persistent mocks within a test process. Without proper restoration, mocks leak across test files. **Solution:** Store original module before mocking, then restore in `afterEach` by re-mocking with the original. Pattern documented in `.squad/skills/bun-mock-isolation/SKILL.md`.
+
+**DateTime Locale-Agnostic Testing:**
+Test assertions must handle locale-dependent formatting (Windows vs. Linux CI). **Solution:** Use regex patterns like `/\d{2}[.:]\d{2}/` to match time components across formats instead of asserting specific digits. Applied to HistoryPage and RoundSummary tests.
+
+**.NET Test Project Wiring:**
+Unit tests reference `Application` + `Contracts` but NOT `Api`. Integration tests reference all three. Paths from test folder to src follow: `..\..\src\<ProjectName>\<ProjectName>.csproj`. All restore/build via `fribascore.slnx` at repo root.
+
+---
+
 ## Learnings
 
 ### 2026-04-03: Bun Module Mock Isolation Pattern
@@ -220,4 +235,10 @@ expect(dateElement.textContent).toMatch(/\d{2}[.:]\d{2}/);
 **Restore/build command:** `dotnet restore fribascore.slnx` / `dotnet build fribascore.slnx` from repo root (the `api/` folder has no solution file — solution lives at repo root as `.slnx`).
 
 **Result:** Restore and build both succeeded cleanly. Committed on `squad/25-api-scaffold`.
+
+### 2026-04-11: Decision merges complete
+
+- **Scribe action:** All decision inbox items (14 files) merged to `.squad/decisions.md`: Aspire deferral decision, Phase 1+2 auth strategy, auth docs phase boundaries, work sequencing, identity storage boundary, PostgreSQL schema design, phase boundary clarity enforcement. Inbox files deleted. QT-3's auth review gate approval now part of master decisions record.
+- **Reference:** QT-3 decision record now part of master decisions.md: "QT-3 Auth Review Gate: Phase Boundary Approval (QT-3, 2026-04-11)". All three review gates passed: factual safety, scope clarity, issue hygiene.
+
 
