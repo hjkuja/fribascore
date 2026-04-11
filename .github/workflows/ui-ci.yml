@@ -1,9 +1,15 @@
-name: CI
+name: UI CI
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'ui/**'
+      - '.github/workflows/ci.yml'
   pull_request:
+    paths:
+      - 'ui/**'
+      - '.github/workflows/ci.yml'
 
 jobs:
   ci:

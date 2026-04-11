@@ -7,7 +7,6 @@ on:
       - 'api/**'
       - '.github/workflows/api.yml'
   pull_request:
-    branches: [ main ]
     paths:
       - 'api/**'
       - '.github/workflows/api.yml'
