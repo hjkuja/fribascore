@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -32,11 +31,17 @@ public sealed class AuthApiFactory : WebApplicationFactory<ApiAssemblyMarker>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureLogging(logging => logging.ClearProviders());
-        builder.ConfigureAppConfiguration((_, config) =>
-            config.AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["ConnectionStrings:FribaConnection"] = connectionString
-            }));
+        builder.ConfigureServices(services =>
+        {
+            // Replace the appsettings.json-backed DbContext options with the Testcontainers instance.
+            // ConfigureAppConfiguration is not reliable here because Program.cs reads the connection
+            // string during WebApplicationBuilder construction before overrides can take effect.
+            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+            if (descriptor is not null)
+                services.Remove(descriptor);
+
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        });
     }
 
     /// <summary>
