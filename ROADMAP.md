@@ -2,7 +2,7 @@
 
 ![Completion](https://progress-bar.xyz/29/?title=Completion&color=c77c27&width=250)
 
-**12 of 41 items complete.** Items are grouped by area. Each pending row has an **Issue** column — link or create a GitHub issue there when you pick the item up so progress is traceable.
+**12 of 42 items complete.** Items are grouped by area. Each pending row has an **Issue** column — link or create a GitHub issue there when you pick the item up so progress is traceable.
 
 > **Updating the progress bar:** Change the number in the URL above (`/29/`) when items are closed. Formula: `round(done / total * 100)`.
 
@@ -57,6 +57,16 @@ See `docs/specs/pwa.md` for full spec.
 | ⬜ | Offline caching strategy — precache app shell; network-first for API calls | — |
 | ⬜ | iOS meta tags — `apple-mobile-web-app-capable`, `apple-touch-icon`, status bar style | — |
 | ⬜ | Install prompt — intercept `beforeinstallprompt`; manual instructions for iOS | — |
+
+---
+
+## 🛠️ Developer Experience
+
+Early DX work can happen in parallel, but it is **not** a product feature and **does not block** auth or the core API slices.
+
+| Status | Item | Issue |
+|--------|------|-------|
+| ⬜ | Aspire AppHost for local dev orchestration — optional local DX for UI + API + local infra; not a prerequisite for auth or core API work | [#33](https://github.com/hjkuja/fribascore/issues/33) |
 
 ---
 
