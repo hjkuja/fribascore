@@ -1,33 +1,31 @@
-using System.Net.Http;
 using FribaScore.Api;
 using FribaScore.Application.Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace FribaScore.Api.Tests.Integration.Infrastructure;
 
 /// <summary>
-/// Creates a test host for auth integration tests.
+/// Creates a test host for auth integration tests backed by a real PostgreSQL database.
+/// The connection string is injected via IConfiguration so no provider sniffing is needed.
 /// </summary>
 public sealed class AuthApiFactory : WebApplicationFactory<ApiAssemblyMarker>
 {
-    // Keep the connection open for the lifetime of the factory so the in-memory
-    // SQLite database survives across DI scopes and HTTP requests.
-    private readonly SqliteConnection connection = new("Data Source=:memory:");
+    private readonly string connectionString;
 
     /// <summary>
     /// Initializes a new integration test factory instance.
     /// </summary>
-    public AuthApiFactory()
+    /// <param name="connectionString">
+    /// PostgreSQL connection string, typically from a <see cref="PostgresDatabaseFixture"/>.
+    /// </param>
+    public AuthApiFactory(string connectionString)
     {
-        connection.Open();
+        this.connectionString = connectionString;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -35,49 +33,44 @@ public sealed class AuthApiFactory : WebApplicationFactory<ApiAssemblyMarker>
         builder.ConfigureLogging(logging => logging.ClearProviders());
         builder.ConfigureServices(services =>
         {
-            services.RemoveAll<AppDbContext>();
-            services.RemoveAll<DbContextOptions<AppDbContext>>();
-            services.RemoveAll<IDbContextOptionsConfiguration<AppDbContext>>();
-            services.AddSingleton(connection);
-            services.AddDbContext<AppDbContext>((serviceProvider, options) =>
-                options.UseSqlite(serviceProvider.GetRequiredService<SqliteConnection>()));
+            // Replace the appsettings.json-backed DbContext options with the Testcontainers instance.
+            // ConfigureAppConfiguration is not reliable here because Program.cs reads the connection
+            // string during WebApplicationBuilder construction before overrides can take effect.
+            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+            if (descriptor is not null)
+                services.Remove(descriptor);
+
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
         });
     }
 
     /// <summary>
     /// Creates an HTTPS test client with cookie handling enabled.
     /// </summary>
-    /// <returns>A configured test HTTP client.</returns>
-    public HttpClient CreateHttpsClient()
-    {
-        return CreateClient(new WebApplicationFactoryClientOptions
+    public HttpClient CreateHttpsClient() =>
+        CreateClient(new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false,
             BaseAddress = new Uri("https://localhost"),
             HandleCookies = true
         });
-    }
 
     /// <summary>
-    /// Ensures that the SQLite test database schema exists.
+    /// Applies pending EF Core migrations so the test database schema is up to date.
+    /// Safe to call multiple times — MigrateAsync is idempotent.
     /// </summary>
     public async Task InitializeDatabaseAsync()
     {
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.Database.MigrateAsync();
     }
 
     /// <summary>
     /// Seeds a user for authentication tests.
     /// </summary>
-    /// <param name="username">The username to create.</param>
-    /// <param name="password">The password to hash and store with Identity.</param>
-    /// <returns>The created identity user.</returns>
     public async Task<IdentityUser> SeedUserAsync(string username, string password)
     {
-        await InitializeDatabaseAsync();
-
         using var scope = Services.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
         var user = new IdentityUser
@@ -89,18 +82,9 @@ public sealed class AuthApiFactory : WebApplicationFactory<ApiAssemblyMarker>
         var createResult = await userManager.CreateAsync(user, password);
         Assert.True(
             createResult.Succeeded,
-            $"Failed to seed auth user: {string.Join(", ", createResult.Errors.Select(error => error.Description))}");
+            $"Failed to seed auth user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
 
         return user;
     }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-
-        if (disposing)
-        {
-            connection.Dispose();
-        }
-    }
 }
+

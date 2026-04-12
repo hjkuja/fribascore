@@ -275,6 +275,136 @@ Keep Phase 2 auth planning draft blocked until Phase 1 is complete and a concret
 - **Courses can wait.** Public, read-only, already seeded locally — less urgent than authenticated resources.
 - **Phase 2 auth is not next.** OIDC/SSO draft correctly framed as planning-only. No package/provider/token work until Phase 1 is live and real use case exists.
 
+### Authentication Endpoints Architecture (BE-8, 2026-04-11)
+
+**Status:** Proposed for implementation  
+**Related Issue:** #26
+
+**Decision:**
+Implement Phase 1 auth endpoints as a dedicated vertical slice:
+
+- **Api:** `FribaScore.Api/Endpoints/Auth/AuthEndpoints.cs` with `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`
+- **Application:** `IAuthService` / `AuthService` using ASP.NET Core Identity `UserManager<AppUser>` + `SignInManager<AppUser>`
+- **Contracts:** Separate request/response DTOs (`LoginRequest`, `AuthMeResponse`)
+- **Exception handling:** Shared `UnauthorizedException` in Contracts; endpoints use `ex.ToProblemResult()` pattern
+- **Cookie behavior:** Override ASP.NET Core Identity redirects in `Program.cs` so API callers receive `401/403` status codes instead of HTML redirects
+
+**Why:**
+- Keeps endpoint handlers thin; preserves existing Result-pattern flow
+- Makes cookie auth behave like an API instead of an MVC site
+- Matches existing `Api → Application → Contracts` layering instead of special-casing auth in `Program.cs`
+- A concrete `AppUser` model avoids refactoring when player/round ownership lands in later issues
+
+**Key Guardrails:**
+- Do not add manual `AddAuthentication(...).AddCookie(...)` alongside Identity unless compelling reason; Identity handles its own cookie setup
+- Use `SignInManager.PasswordSignInAsync(...)` for login; `SignInManager.SignOutAsync()` for logout
+- Keep endpoints scoped to Phase 1 (`/auth/login`, `/auth/logout`, `/auth/me`); no registration, JWT, or provider flow creep
+- `SameSite=Strict` requires same-site HTTPS origin for UI and API (dev trap: localhost:5173 + API requires both HTTPS in same site)
+- Data Protection key durability: if keys only in memory, app restarts invalidate cookies
+- Use `WebApplicationFactory<Program>` with Testcontainers PostgreSQL for testing (see Testcontainers decision)
+
+### Authentication Testing Pattern (QT-3, 2026-04-11)
+
+**Status:** Proposed for #26 tests
+
+**Decision:**
+Use ASP.NET Core `WebApplicationFactory<Program>` integration harness with Testcontainers PostgreSQL backend for auth behavior tests.
+
+**Why:**
+- Exercises real HTTP pipeline, cookie auth middleware, Identity services, endpoint mapping
+- Same provider as production (PostgreSQL via Testcontainers, not SQLite)
+- Keeps tests fast and isolated per factory instance
+- Preserves real Identity password hashing and cookie issuance behavior
+
+**Test Setup:**
+- Remove `AppDbContext`, `DbContextOptions<AppDbContext>` registrations before re-registering with Testcontainers-backed context
+- Ensure schema created before all auth requests (including anonymous)
+- Use `IClassFixture<PostgresDatabaseFixture>` per test class
+- Isolate test data with unique usernames (e.g., `$"qt3-{Guid.NewGuid():N}"`)
+
+**Contract Assertions:**
+- Login success/failure with correct password/username validation
+- Logout clears cookie
+- `/auth/me` authorization and exact `{ id, username }` response shape
+
+### Testcontainers PostgreSQL Integration Tests (BE-8, 2026-04-11)
+
+**Status:** Active  
+**Related Issue:** #26 (auth endpoints)
+
+**Decision:**
+Integration tests for `FribaScore.Api` use **Testcontainers.PostgreSql** (not SQLite in-memory) to ensure provider fidelity with production PostgreSQL.
+
+**Key Pattern:**
+- `PostgresDatabaseFixture : IAsyncLifetime` — xUnit class fixture. Starts one container per test class, runs `MigrateAsync` once, disposes after all tests complete.
+- `AuthApiFactory(string connectionString)` — connection string injected at construction via `IConfiguration`
+- `IClassFixture<PostgresDatabaseFixture>` on test classes — xUnit injects the fixture
+
+**Rationale:**
+- SQLite lacks PostgreSQL-specific behavior: JSON operators, identity column semantics, constraint enforcement differences
+- Testcontainers gives full provider fidelity — same driver, same migration path, same SQL as production
+- EF Core `MigrateAsync()` exercises real migration path, catching schema drift early
+- Tests must use unique identifiers per test (e.g., `$"qt3-{Guid.NewGuid():N}"`) to avoid conflicts in shared container
+
+**Constraints:**
+- Docker must be running locally for integration tests
+- Each test class shares one container; use unique usernames/IDs to isolate test data
+
+**Artifacts:**
+- `PostgresDatabaseFixture` in test infrastructure
+- `IDesignTimeDbContextFactory<AppDbContext>` in `FribaScore.Application` for design-time migration support
+- `InitialCreate` EF Core migration codifying schema
+
+### Testcontainers CI Integration: No Workflow Changes Needed (OPS-9, 2026-04-11)
+
+**Status:** Complete
+
+**Finding:**
+`.github/workflows/api.yml` **requires no changes** for Testcontainers integration tests.
+
+**Why:**
+- Runner `ubuntu-latest` includes Docker daemon pre-installed and running
+- Testcontainers library auto-detects Docker availability
+- No explicit container setup or pull steps needed in workflow
+
+**Documentation:**
+- `docs/development/testing.md` — backend test commands, integration test section
+- `docs/api/overview.md` — testing section with Docker requirement and container lifecycle
+- `docs/architecture/overview.md` — database section notes Testcontainers usage
+
+**Key Points for Team:**
+1. Local integration tests require Docker daemon
+2. CI automatically works; ubuntu-latest has Docker
+3. Container lifecycle managed by Testcontainers runtime
+4. EF Core migrations applied on container init
+
+### XML Documentation Requirements Across API Projects (BE-8, 2026-04-12)
+
+**Status:** Complete
+
+**Summary:**
+CS1591 ("missing XML comment") now treated as a build error across all three API projects. All public types, members, and methods require XML documentation comments.
+
+**Implementation (2026-04-12):**
+- **Contracts:** 60 errors resolved across 12 files (requests, responses, exceptions) — commit fbbb6eb
+- **Application:** 100+ errors resolved across 10 files (models, database, mapping, services) — commit 33a8ee8
+- **Result:** Full solution builds with 0 errors, 0 warnings
+
+**Scope (All Three Projects):**
+- `FribaScore.Contracts` — All DTOs and exception types documented
+- `FribaScore.Application` — Models, DbContext, mapping extensions, service interfaces and implementations
+- `FribaScore.Api` — Endpoints and middleware
+
+**Documentation Pattern:**
+- **Classes/Records:** `<summary>` describing purpose and responsibility
+- **Properties:** `<summary>` explaining representation
+- **Methods:** `<summary>` + `<param>` + `<returns>` tags
+- **Interface Implementations:** Use `/// <inheritdoc />` for service implementations
+
+**Artifacts:**
+- Complete documentation accessible via IntelliSense
+- No functional changes; documentation is non-breaking
+
 ## Governance
 
 - All meaningful changes require team consensus
