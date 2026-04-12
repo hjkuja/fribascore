@@ -378,6 +378,33 @@ Integration tests for `FribaScore.Api` use **Testcontainers.PostgreSql** (not SQ
 3. Container lifecycle managed by Testcontainers runtime
 4. EF Core migrations applied on container init
 
+### XML Documentation Requirements Across API Projects (BE-8, 2026-04-12)
+
+**Status:** Complete
+
+**Summary:**
+CS1591 ("missing XML comment") now treated as a build error across all three API projects. All public types, members, and methods require XML documentation comments.
+
+**Implementation (2026-04-12):**
+- **Contracts:** 60 errors resolved across 12 files (requests, responses, exceptions) — commit fbbb6eb
+- **Application:** 100+ errors resolved across 10 files (models, database, mapping, services) — commit 33a8ee8
+- **Result:** Full solution builds with 0 errors, 0 warnings
+
+**Scope (All Three Projects):**
+- `FribaScore.Contracts` — All DTOs and exception types documented
+- `FribaScore.Application` — Models, DbContext, mapping extensions, service interfaces and implementations
+- `FribaScore.Api` — Endpoints and middleware
+
+**Documentation Pattern:**
+- **Classes/Records:** `<summary>` describing purpose and responsibility
+- **Properties:** `<summary>` explaining representation
+- **Methods:** `<summary>` + `<param>` + `<returns>` tags
+- **Interface Implementations:** Use `/// <inheritdoc />` for service implementations
+
+**Artifacts:**
+- Complete documentation accessible via IntelliSense
+- No functional changes; documentation is non-breaking
+
 ## Governance
 
 - All meaningful changes require team consensus

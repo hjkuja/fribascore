@@ -113,3 +113,26 @@
 - **Key lesson:** `MigrateAsync` is an extension method from `Microsoft.EntityFrameworkCore` namespace — add `using Microsoft.EntityFrameworkCore;` in any file that calls it, even if EF is a transitive reference.
 - **Build result:** 0 errors, 0 warnings.
 
+### 2026-04-12 — Fix: CS1591 warnings-as-errors in FribaScore.Contracts
+
+- **Context:** PR #35 enabled `TreatWarningsAsErrors` project-wide. FribaScore.Contracts had 60 CS1591 errors (missing XML doc comments on all public types and members).
+- **Scope:** Added comprehensive XML documentation (`<summary>` + `<param>` tags) to all 12 contract files:
+  - Request DTOs: `CreateCourseRequest`, `CreatePlayerRequest`, `CreateRoundRequest`, `LoginRequest`
+  - Response DTOs: `CourseResponse`, `PlayerResponse`, `RoundResponse`, `AuthUserResponse`
+  - Exception classes: `CustomException`, `NotFoundException`, `BadRequestException`, `UnauthorizedException`
+- **Pattern:** Each record/class gets a `<summary>` tag; each positional parameter gets a `<param name="...">...</param>` tag. For exception classes, included property-level summaries.
+- **Build result:** Clean build, 0 errors, 0 warnings.
+
+### 2026-04-12 — Fix: CS1591 warnings-as-errors in FribaScore.Application
+
+- **Context:** Following CS1591 enforcement in FribaScore.Contracts, FribaScore.Application now enforces XML doc comments on all public members (18 files).
+- **Scope:** Added comprehensive XML documentation to:
+  - Models: `Course`, `Hole`, `Player`, `Round`, `ScoreEntry` (all properties documented with type and purpose)
+  - Database: `AppDbContext` (class + DbSet properties), `AppDbContextDesignTimeFactory` (design-time factory for EF CLI)
+  - Mapping: `CourseExtensions`, `PlayerExtensions`, `RoundExtensions`, `IdentityUserExtensions` (all extension methods documented; `IdentityUserExtensions` already had docs)
+  - Services: `ServiceExtensions` (DI registration method)
+  - Service interfaces: `ICourseService`, `IPlayerService`, `IRoundService`, `IAuthService` (already had docs)
+  - Service implementations: `CourseService`, `PlayerService`, `RoundService`, `AuthService` (already had docs via `/// <inheritdoc />`)
+- **Pattern:** Each public type gets `<summary>` tag describing its purpose; each public member (property, method, constructor) gets `<summary>` + `<param>` tags where applicable. Constructor parameters inherited from interfaces use `/// <inheritdoc />`.
+- **Build result:** Clean build, 0 errors, 0 warnings.
+- **Key lesson:** CS1591 now enforced in all three API projects (Contracts, Application, Api). All public members require XML docs.
