@@ -11,7 +11,9 @@ namespace FribaScore.Api.Tests.Integration.Infrastructure;
 
 /// <summary>
 /// Creates a test host for auth integration tests backed by a real PostgreSQL database.
-/// The connection string is injected via IConfiguration so no provider sniffing is needed.
+/// The existing <see cref="Microsoft.EntityFrameworkCore.DbContextOptions{TContext}"/> registration is replaced
+/// in <see cref="Microsoft.Extensions.DependencyInjection.IServiceCollection"/> so the Testcontainers
+/// connection string is used instead of the one from appsettings.json.
 /// </summary>
 public sealed class AuthApiFactory : WebApplicationFactory<ApiAssemblyMarker>
 {
