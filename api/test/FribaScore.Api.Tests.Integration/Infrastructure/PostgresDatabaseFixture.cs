@@ -8,7 +8,7 @@ namespace FribaScore.Api.Tests.Integration.Infrastructure;
 /// </summary>
 public sealed class PostgresDatabaseFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:17-alpine")
+    private readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:18.3-alpine3.23")
         .WithDatabase("fribascore_test")
         .WithUsername("fribascore")
         .WithPassword("testpassword")
