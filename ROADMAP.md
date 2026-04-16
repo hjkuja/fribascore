@@ -1,8 +1,8 @@
 # FribaScore Roadmap
 
-![Completion](https://progress-bar.xyz/29/?title=Completion&color=c77c27&width=250)
+![Completion](https://progress-bar.xyz/31/?title=Completion&color=c77c27&width=250)
 
-**12 of 42 items complete.** Items are grouped by area. Each pending row has an **Issue** column — link or create a GitHub issue there when you pick the item up so progress is traceable.
+**14 of 45 items complete.**Items are grouped by area. Each pending row has an **Issue** column — link or create a GitHub issue there when you pick the item up so progress is traceable.
 
 > **Updating the progress bar:** Change the number in the URL above (`/29/`) when items are closed. Formula: `round(done / total * 100)`.
 
@@ -33,7 +33,7 @@ The design spec (`docs/specs/ui-design.md`) defines a retro-futurist aesthetic. 
 
 | Status | Item | Issue |
 |--------|------|-------|
-| ⬜ | CSS design system — full custom-property palette (`--bg`, `--text`, `--accent`, `--glass-bg`, etc.) | [#16](https://github.com/hjkuja/fribascore/issues/16) |
+| ✅ | CSS design system — full custom-property palette (`--bg`, `--text`, `--accent`, `--glass-bg`, etc.) | [#16](https://github.com/hjkuja/fribascore/issues/16) |
 | ⬜ | Google Fonts — load Bebas Neue + Space Grotesk from Google Fonts | [#17](https://github.com/hjkuja/fribascore/issues/17) |
 | ⬜ | Background effects — amber grid, film-grain overlay, scanlines, ambient orbs | [#18](https://github.com/hjkuja/fribascore/issues/18) |
 | ⬜ | Glassmorphism card style (`backdrop-filter`, glass border, hover lift/glow) | [#19](https://github.com/hjkuja/fribascore/issues/19) |
@@ -76,7 +76,9 @@ See `docs/api/overview.md`. The backend has not been started. It will live in `a
 
 | Status | Item | Issue |
 |--------|------|-------|
-| ⬜ | .NET Web API project scaffold (`api/` directory, solution file, CI hook) | [#25](https://github.com/hjkuja/fribascore/issues/25) |
+| ✅ | .NET Web API project scaffold (`api/` directory, solution file, CI hook) | [#25](https://github.com/hjkuja/fribascore/issues/25) |
+| ⬜ | Rename `AppDbContext` → `FribaDbContext`, regenerate initial migration | [#37](https://github.com/hjkuja/fribascore/issues/37) |
+| ⬜ | Configuration options binding — implement Options pattern for typed config | [#38](https://github.com/hjkuja/fribascore/issues/38) |
 | ⬜ | Auth endpoints — `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | [#26](https://github.com/hjkuja/fribascore/issues/26) |
 | ⬜ | Courses API — `GET /courses`, `GET /courses/{id}` | [#27](https://github.com/hjkuja/fribascore/issues/27) |
 | ⬜ | Players API — `GET /PUT /POST /DELETE /players` | [#28](https://github.com/hjkuja/fribascore/issues/28) |
@@ -105,6 +107,7 @@ See `docs/specs/backend-sync.md`. Sync is additive — it must never block offli
 |--------|------|-------|
 | ⬜ | Component test coverage — most pages and several components lack tests | — |
 | ⬜ | E2E tests — configure Playwright in `test/e2e/playwright/`, write smoke tests | — |
+| ⬜ | Upgrade backend test projects from xUnit v2 to xUnit v3 | [#36](https://github.com/hjkuja/fribascore/issues/36) |
 
 ---
 
