@@ -4,7 +4,7 @@ Backend API for FribaScore — disc golf scorecard app.
 
 ## Status
 
-🟡 **Scaffolded, in progress.** 3-project solution structure is in place, all endpoints are mapped, service layer is wired up. Auth (issue #26) is not yet implemented.
+🟡 **Scaffolded, in progress.** 3-project solution structure is in place, service layer is wired up, and auth endpoints are implemented. Resource APIs remain in progress.
 
 ## Tech Stack
 
@@ -71,27 +71,28 @@ api/
 | `GET` | `/rounds` | List rounds for the authenticated user |
 | `POST` | `/rounds` | Create a round (immutable after creation — no PUT) |
 
-### Auth — issue [#26](https://github.com/hjkuja/fribascore/issues/26), not yet implemented
+### Auth — implemented in issue [#26](https://github.com/hjkuja/fribascore/issues/26)
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `POST` | `/auth/login` | Public | Validates username + password, returns `200` with HttpOnly cookie on success, `401` on failure |
-| `POST` | `/auth/logout` | Authenticated | Clears auth cookie |
+| `POST` | `/auth/login` | Public | Validates username + password, returns `200` with current user info and an HttpOnly cookie on success, `401` on failure |
+| `POST` | `/auth/logout` | Authenticated | Clears auth cookie and returns `204 No Content` |
 | `GET` | `/auth/me` | Authenticated | Returns current user info (`id`, `username`), `401` otherwise |
 
 ## Authentication
 
-### Phase 1: ASP.NET Core Identity + HttpOnly Cookies (Current plan)
+### Phase 1: ASP.NET Core Identity + HttpOnly Cookies (Implemented)
 
 Uses **ASP.NET Core Identity** with **HttpOnly cookie sessions** — the default authentication mechanism for ASP.NET Core web applications.
 
 **Strategy:**
 - Phase 1 scope matches issue #26 exactly: `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`
 - User credentials stored securely via ASP.NET Core Identity
-- Sessions maintained via HttpOnly cookies (`SameSite=Strict`, secure in production)
+- Sessions maintained via persistent HttpOnly cookies (`SameSite=Strict`, secure in production)
 - No JWT tokens; tokens are never stored in `localStorage`
 - All non-public endpoints require `RequireAuthorization()`
 - Passwords are hashed via Identity; no plaintext password storage
+- Cookie auth redirects are suppressed for API endpoints so unauthenticated requests return `401` instead of HTML redirects
 
 **Why this approach:**
 - Offline-first UX: the browser handles the auth cookie without client-side token storage logic
@@ -118,7 +119,7 @@ If FribaScore expands to support multi-app scenarios or federated identity (for 
 
 ## Local Development
 
-**Prerequisites:** .NET 10 SDK, PostgreSQL running locally.
+**Prerequisites:** .NET 10 SDK, PostgreSQL running locally, Docker (for integration tests).
 
 **Connection string:** Set in `api/src/FribaScore.Api/appsettings.Development.json` (not committed).
 
@@ -131,6 +132,29 @@ dotnet run
 |-----|-------------|
 | `https://localhost:5001/scalar` | Scalar OpenAPI UI (dev only) |
 | `https://localhost:5001/openapi/v1.json` | Raw OpenAPI JSON |
+
+## Testing
+
+### Integration Tests
+
+Integration tests use **Testcontainers** to run PostgreSQL containers. This provides a production-equivalent test environment without mocking the database layer.
+
+**Requirements:**
+- Docker must be running locally
+- Testcontainers handles container setup and teardown automatically
+
+**Running integration tests:**
+```bash
+dotnet test api/test/FribaScore.Api.Tests.Integration
+```
+
+The test factory (`AuthApiFactory`, etc.) creates a `WebApplicationFactory<ApiAssemblyMarker>` that:
+1. Spins up a PostgreSQL container via Testcontainers
+2. Applies all EF Core migrations to create a production schema
+3. Provides helper methods to seed test data and create HTTP clients
+4. Cleans up the container after tests complete
+
+See `docs/development/testing.md` for more details.
 
 ## CI
 

@@ -10,8 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FribaScore.Application.Services;
 
+/// <summary>
+/// Implements course-related business operations.
+/// </summary>
 public class CourseService(AppDbContext db) : ICourseService
 {
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<CourseResponse>>> GetAllAsync()
     {
         try
@@ -25,6 +29,7 @@ public class CourseService(AppDbContext db) : ICourseService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<CourseResponse>> GetByIdAsync(Guid id)
     {
         try
@@ -40,6 +45,7 @@ public class CourseService(AppDbContext db) : ICourseService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<CourseResponse>> CreateAsync(CreateCourseRequest request)
     {
         try
@@ -70,6 +76,7 @@ public class CourseService(AppDbContext db) : ICourseService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<bool>> DeleteAsync(Guid id)
     {
         try

@@ -365,3 +365,35 @@ After BE-8 restructured the API into Contracts/Application/Api split, both test 
 
 **Verification:**
 `dotnet build fribascore.slnx` — Build succeeded (0 errors, 0 warnings)
+
+---
+
+## xUnit v3 Migration Scope (2026-04-14)
+
+**Authors:** LD-7 (scope definition), QT-3 (compatibility review)  
+**Status:** Proposed (Issue #36 pending review)
+
+Migration both .NET test projects from xUnit v2 (2.9.3) to xUnit v3 with Microsoft Testing Platform (MTP).
+
+### Key Decisions
+
+1. **MTP is optional** — xUnit v3 runs via existing VSTest adapter; MTP opt-in deferred as separate follow-up
+2. **`OutputType=Exe` is required** — Hard requirement; both test `.csproj` files must add `<OutputType>Exe</OutputType>`
+3. **`coverlet.collector` unchanged** — Works with VSTest adapter path; no code coverage changes
+4. **`IAsyncLifetime` return type fix required** — `PostgresDatabaseFixture` must update `InitializeAsync`/`DisposeAsync` from `Task` to `ValueTask`
+5. **Lockfile regeneration mandatory** — After package changes, run `dotnet restore` and commit updated `packages.lock.json` files
+6. **CI changes minimal** — `dotnet test fribascore.slnx` continues to work with VSTest adapter
+
+### Compatibility Assessment
+
+All existing test patterns are v3-compatible:
+- `IClassFixture<T>` ✓
+- `WebApplicationFactory<T>` ✓
+- `async [Fact]` tests ✓
+- `Assert.*` methods ✓
+
+No architectural refactoring required — only structural changes.
+
+### Note
+
+CI workflow bug identified (out of scope): `api.yml` path filter references `.github/workflows/api.yml` instead of `.github/workflows/api-ci.yml`; separate PR recommended.

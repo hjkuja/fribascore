@@ -10,8 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FribaScore.Application.Services;
 
+/// <summary>
+/// Implements player-related business operations.
+/// </summary>
 public class PlayerService(AppDbContext db) : IPlayerService
 {
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<PlayerResponse>>> GetAllAsync()
     {
         try
@@ -25,6 +29,7 @@ public class PlayerService(AppDbContext db) : IPlayerService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<PlayerResponse>> GetByIdAsync(Guid id)
     {
         try
@@ -40,6 +45,7 @@ public class PlayerService(AppDbContext db) : IPlayerService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<PlayerResponse>> CreateAsync(CreatePlayerRequest request)
     {
         try
@@ -58,6 +64,7 @@ public class PlayerService(AppDbContext db) : IPlayerService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<bool>> DeleteAsync(Guid id)
     {
         try

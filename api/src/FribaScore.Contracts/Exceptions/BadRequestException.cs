@@ -1,5 +1,8 @@
 namespace FribaScore.Contracts.Exceptions;
 
+/// <summary>
+/// Represents an error caused by invalid or malformed client input.
+/// </summary>
 public class BadRequestException(string message, Dictionary<string, string[]>? errors = null)
     : CustomException(
         "Bad Request",

@@ -136,6 +136,8 @@ return (await courseService.GetAllAsync())
 
 PostgreSQL via EF Core + Npgsql. `AppDbContext` lives in `FribaScore.Application`. NuGet lockfiles are enforced via `RestorePackagesWithLockFile=true` in `Directory.Build.props`.
 
+**Integration tests:** Use Testcontainers to spin up PostgreSQL containers automatically. Tests run migrations and provide a production-equivalent schema for testing. Requires Docker to be available locally.
+
 ### OpenAPI
 
 Built-in .NET `AddOpenApi()` (no Swashbuckle). Spec available at `/openapi/v1.json`. Scalar UI served for browser exploration. Endpoint handlers use `TypedResults` with `Results<Ok<T>, ProblemHttpResult>` return types so the framework can infer response schemas.

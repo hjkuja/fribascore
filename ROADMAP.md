@@ -1,10 +1,10 @@
 # FribaScore Roadmap
 
-![Completion](https://progress-bar.xyz/29/?title=Completion&color=c77c27&width=250)
+![Completion](https://progress-bar.xyz/33/?title=Completion&color=c77c27&width=250)
 
-**12 of 42 items complete.** Items are grouped by area. Each pending row has an **Issue** column — link or create a GitHub issue there when you pick the item up so progress is traceable.
+**14 of 42 items complete.** Items are grouped by area. Each pending row has an **Issue** column — link or create a GitHub issue there when you pick the item up so progress is traceable.
 
-> **Updating the progress bar:** Change the number in the URL above (`/29/`) when items are closed. Formula: `round(done / total * 100)`.
+> **Updating the progress bar:** Change the number in the URL above (`/33/`) when items are closed. Formula: `round(done / total * 100)`.
 
 ---
 
@@ -72,12 +72,12 @@ Early DX work can happen in parallel, but it is **not** a product feature and **
 
 ## 🖥️ Backend API
 
-See `docs/api/overview.md`. The backend has not been started. It will live in `api/` at the monorepo root.
+See `docs/api/overview.md`. The backend is scaffolded under `api/`, and auth endpoints are implemented. Core resource APIs are still in progress.
 
 | Status | Item | Issue |
 |--------|------|-------|
-| ⬜ | .NET Web API project scaffold (`api/` directory, solution file, CI hook) | [#25](https://github.com/hjkuja/fribascore/issues/25) |
-| ⬜ | Auth endpoints — `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | [#26](https://github.com/hjkuja/fribascore/issues/26) |
+| ✅ | .NET Web API project scaffold (`api/` directory, solution file, CI hook) | [#25](https://github.com/hjkuja/fribascore/issues/25) |
+| ✅ | Auth endpoints — `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | [#26](https://github.com/hjkuja/fribascore/issues/26) |
 | ⬜ | Courses API — `GET /courses`, `GET /courses/{id}` | [#27](https://github.com/hjkuja/fribascore/issues/27) |
 | ⬜ | Players API — `GET /PUT /POST /DELETE /players` | [#28](https://github.com/hjkuja/fribascore/issues/28) |
 | ⬜ | Rounds API — `GET /rounds`, `POST /rounds` | [#29](https://github.com/hjkuja/fribascore/issues/29) |
@@ -90,7 +90,7 @@ See `docs/specs/backend-sync.md`. Sync is additive — it must never block offli
 
 | Status | Item | Issue |
 |--------|------|-------|
-| ⬜ | Frontend auth flow — sign-in / sign-out UI, JWT token storage | — |
+| ⬜ | Frontend auth flow — sign-in / sign-out UI, cookie-based session handling | — |
 | ⬜ | Sync queue — local queue of unsynced mutations, flushed when online + authenticated | — |
 | ⬜ | Course sync — remote → local; replace seed data after first sync | — |
 | ⬜ | Player sync — bidirectional, last-write-wins on modification time | — |

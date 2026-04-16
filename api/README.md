@@ -18,7 +18,7 @@ docker run -d \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -p 5432:5432 \
-  postgres:16
+  postgres:18.3
 ```
 
 ### 2. Restore packages

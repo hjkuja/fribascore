@@ -10,8 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FribaScore.Application.Services;
 
+/// <summary>
+/// Implements round-related business operations.
+/// </summary>
 public class RoundService(AppDbContext db) : IRoundService
 {
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<RoundResponse>>> GetAllAsync()
     {
         try
@@ -25,6 +29,7 @@ public class RoundService(AppDbContext db) : IRoundService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<RoundResponse>> GetByIdAsync(Guid id)
     {
         try
@@ -40,6 +45,7 @@ public class RoundService(AppDbContext db) : IRoundService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<RoundResponse>> CreateAsync(CreateRoundRequest request)
     {
         try
@@ -65,6 +71,7 @@ public class RoundService(AppDbContext db) : IRoundService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<bool>> DeleteAsync(Guid id)
     {
         try
