@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FribaScore.Api/FribaScore.Api.csproj" />
+    <Project Path="src/FribaScore.Application/FribaScore.Application.csproj" />
+    <Project Path="src/FribaScore.Contracts/FribaScore.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/FribaScore.Api.Tests.Integration/FribaScore.Api.Tests.Integration.csproj" />
+    <Project Path="test/FribaScore.Api.Tests.Unit/FribaScore.Api.Tests.Unit.csproj" />
+  </Folder>
+</Solution>
