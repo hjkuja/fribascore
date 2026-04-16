@@ -23,9 +23,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-        ? CookieSecurePolicy.SameAsRequest
-        : CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.Events.OnRedirectToLogin = context =>
     {
@@ -39,10 +37,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials());
