@@ -22,22 +22,22 @@
 | 8 | Round summary — totals + relative-to-par | `RoundSummary` page |
 | 9 | Round history list | `HistoryPage` + links to summaries |
 | 10 | IndexedDB data layer | `utils/db.ts` — courses, rounds, players stores |
-| 11 | Seed data on first run | `data/dummyCourses.ts` loaded when no courses exist |
+| 11 | Development seed data | `data/dummyCourses.ts` loaded in local development when no courses exist |
 | 12 | App routing + layout shell | `AppRoutes.tsx`, `AppLayout.tsx`, hamburger nav |
 
 ---
 
 ## 🎨 UI / Design System
 
-The design spec (`docs/specs/ui-design.md`) defines a retro-futurist aesthetic. The current UI is a minimal placeholder.
+The design spec (`docs/specs/ui-design.md`) defines a retro-futurist aesthetic. Shared tokens, typography, and some glass/background effects are in place, but the full visual rollout is still incomplete.
 
 | Status | Item | Issue |
 |--------|------|-------|
 | ✅ | CSS design system — full custom-property palette (`--bg`, `--text`, `--accent`, `--glass-bg`, etc.) | [#16](https://github.com/hjkuja/fribascore/issues/16) |
-| ⬜ | Google Fonts — load Bebas Neue + Space Grotesk from Google Fonts | [#17](https://github.com/hjkuja/fribascore/issues/17) |
-| ⬜ | Background effects — amber grid, film-grain overlay, scanlines, ambient orbs | [#18](https://github.com/hjkuja/fribascore/issues/18) |
-| ⬜ | Glassmorphism card style (`backdrop-filter`, glass border, hover lift/glow) | [#19](https://github.com/hjkuja/fribascore/issues/19) |
-| ⬜ | Button design system — primary (solid amber) + outline variants | [#20](https://github.com/hjkuja/fribascore/issues/20) |
+| ✅ | Google Fonts — Bebas Neue + Space Grotesk loaded from Google Fonts | [#17](https://github.com/hjkuja/fribascore/issues/17) |
+| ⬜ | Background effects — complete the current amber grid / film-grain foundation with scanlines and ambient orbs | [#18](https://github.com/hjkuja/fribascore/issues/18) |
+| ⬜ | Glassmorphism card style — roll the existing card treatment out consistently across the app | [#19](https://github.com/hjkuja/fribascore/issues/19) |
+| ⬜ | Button design system — adopt the existing primary + outline variants across the remaining screens | [#20](https://github.com/hjkuja/fribascore/issues/20) |
 | ⬜ | Navigation bar — sticky glass, Bebas Neue logo, branded, mobile collapse | [#21](https://github.com/hjkuja/fribascore/issues/21) |
 | ⬜ | Home page — hero / marketing layout (currently a placeholder) | [#22](https://github.com/hjkuja/fribascore/issues/22) |
 | ⬜ | Start Round page — styled layout | [#23](https://github.com/hjkuja/fribascore/issues/23) |
@@ -72,7 +72,7 @@ Early DX work can happen in parallel, but it is **not** a product feature and **
 
 ## 🖥️ Backend API
 
-See `docs/api/overview.md`. The backend has not been started. It will live in `api/` at the monorepo root.
+See `docs/api/overview.md`. The backend scaffold is active under `api/`: route groups, services, contracts, Identity wiring, and CI are in place, but auth endpoints and per-user ownership are still in progress.
 
 | Status | Item | Issue |
 |--------|------|-------|
@@ -80,9 +80,9 @@ See `docs/api/overview.md`. The backend has not been started. It will live in `a
 | ⬜ | Rename `AppDbContext` → `FribaDbContext`, regenerate initial migration | [#37](https://github.com/hjkuja/fribascore/issues/37) |
 | ⬜ | Configuration options binding — implement Options pattern for typed config | [#38](https://github.com/hjkuja/fribascore/issues/38) |
 | ⬜ | Auth endpoints — `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | [#26](https://github.com/hjkuja/fribascore/issues/26) |
-| ⬜ | Courses API — `GET /courses`, `GET /courses/{id}` | [#27](https://github.com/hjkuja/fribascore/issues/27) |
-| ⬜ | Players API — `GET /PUT /POST /DELETE /players` | [#28](https://github.com/hjkuja/fribascore/issues/28) |
-| ⬜ | Rounds API — `GET /rounds`, `POST /rounds` | [#29](https://github.com/hjkuja/fribascore/issues/29) |
+| ⬜ | Courses API — stabilize the current `/api/courses` route group and remaining backend behavior | [#27](https://github.com/hjkuja/fribascore/issues/27) |
+| ⬜ | Players API — finish the `/api/players` surface, ownership rules, and missing update behavior | [#28](https://github.com/hjkuja/fribascore/issues/28) |
+| ⬜ | Rounds API — finish the `/api/rounds` surface and ownership rules | [#29](https://github.com/hjkuja/fribascore/issues/29) |
 
 ---
 
@@ -92,7 +92,7 @@ See `docs/specs/backend-sync.md`. Sync is additive — it must never block offli
 
 | Status | Item | Issue |
 |--------|------|-------|
-| ⬜ | Frontend auth flow — sign-in / sign-out UI, JWT token storage | — |
+| ⬜ | Frontend auth flow — sign-in / sign-out UI and cookie-session state handling | — |
 | ⬜ | Sync queue — local queue of unsynced mutations, flushed when online + authenticated | — |
 | ⬜ | Course sync — remote → local; replace seed data after first sync | — |
 | ⬜ | Player sync — bidirectional, last-write-wins on modification time | — |

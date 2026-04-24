@@ -7,6 +7,8 @@ This guide covers everything you need to run FribaScore locally for development.
 - [Bun](https://bun.sh) v1.3.10 or later — used as the package manager, runtime, and test runner
 - A modern browser (Chrome or Firefox recommended for IndexedDB DevTools)
 - Git
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) — required for backend/API work
+- PostgreSQL — required when working on the API data layer locally
 
 ## Setup
 
@@ -28,6 +30,17 @@ bun dev
 ```
 
 The dev server starts at `http://localhost:5173` by default and is also accessible on your local network IP (useful for testing on a phone).
+
+## Optional: Run the API locally
+
+If you are working on the backend as well, use the solution under `api/`:
+
+```bash
+dotnet restore api/fribascore.slnx
+dotnet run --project api/src/FribaScore.Api
+```
+
+The development launch profile listens on `https://localhost:8443` and `http://localhost:8080`. See [`api/README.md`](../../api/README.md) for database setup details and backend-specific commands.
 
 ## Environment Variables
 
@@ -72,6 +85,8 @@ Runs `tsc --noEmit` over both `tsconfig.app.json` and `tsconfig.test.json` witho
 
 ```
 fribascore/           # Monorepo root
+  api/                # ASP.NET Core backend
+    fribascore.slnx   # Backend solution entry point
   ui/                 # React frontend
     src/
       app/            # App shell (routing, layout)
@@ -92,6 +107,6 @@ When running `bun dev`, an extra route is available at `/__admin`. This page pro
 
 ## IndexedDB
 
-All app data lives in the browser's IndexedDB (`fribascore` database). On first run, seed courses are loaded automatically from `src/data/dummyCourses.ts`.
+All app data lives in the browser's IndexedDB (`fribascore` database). During local development, seed courses are loaded from `src/data/dummyCourses.ts` when the local `courses` store is empty.
 
 To reset the database during development, use the `/__admin` page or clear site data in your browser's DevTools (Application → Storage → Clear site data).

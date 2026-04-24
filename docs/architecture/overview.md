@@ -15,7 +15,7 @@ FribaScore is an offline-first disc golf scorecard web app built as a monorepo. 
 |-------|------------|
 | Frontend framework | React 19 (functional components, hooks) |
 | Frontend language | TypeScript (strict mode) |
-| Build tool | Vite 7 + Babel React Compiler |
+| Build tool | Vite 8 + Babel React Compiler |
 | Routing | React Router DOM v7 |
 | Local storage | IndexedDB via `idb` v8 |
 | Package manager | Bun |
@@ -36,6 +36,7 @@ The repo is a monorepo containing both the frontend and backend.
 fribascore/
   ui/                       # React frontend (Bun + Vite)
   api/                      # ASP.NET Core backend
+    fribascore.slnx         # .NET solution file
     src/
       FribaScore.Api/
       FribaScore.Application/
@@ -48,7 +49,6 @@ fribascore/
     workflows/
       ci.yml                # Frontend CI
       api.yml               # Backend CI
-  fribascore.slnx           # .NET solution file (includes all 5 projects)
 ```
 
 Frontend work lives entirely under `ui/`. Backend work lives entirely under `api/`. Shared docs live under `docs/`.
@@ -78,8 +78,8 @@ Data is always written to local storage first. The backend sync is additive and 
 ### Single local database
 All app data lives in a single local database with separate stores for courses, rounds, and players. All reads and writes are centralised through one utility module — no component accesses storage directly.
 
-### Seed data on first run
-On first load, if no courses exist locally, a set of dummy courses is loaded automatically. This ensures the app is usable before any backend is available.
+### Seed data in local development
+When running the frontend in development, the app seeds dummy courses if the local `courses` store is empty. This keeps local development usable without a backend dependency while avoiding hidden production seeding behavior.
 
 ### Dev-only tools
 A debug/admin page is only available in development builds. It provides tools for inspecting and resetting local data during development.
@@ -142,4 +142,4 @@ Built-in .NET `AddOpenApi()` (no Swashbuckle). Spec available at `/openapi/v1.js
 
 ### Solution File
 
-`fribascore.slnx` at the repo root includes all 5 projects (3 app + 2 test). Use this for all `dotnet build` and `dotnet test` invocations.
+`api/fribascore.slnx` is the current backend solution entry point. Use it for `dotnet restore`, `dotnet build`, and `dotnet test`.
