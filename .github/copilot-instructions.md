@@ -108,7 +108,7 @@ describe("MyComponent", () => {
 
 ### Project Structure
 
-The backend lives in `api/` at the repo root. The solution file `fribascore.slnx` at the repo root includes all projects (frontend + backend).
+The backend lives in `api/` at the repo root. The current solution entry point is `api/fribascore.slnx`.
 
 ```
 api/
@@ -200,8 +200,8 @@ public static ProblemHttpResult ToProblemResult(this Exception ex) { ... }
 ### Build and Test
 
 ```bash
-dotnet build fribascore.slnx       # builds all projects
-dotnet test fribascore.slnx        # runs all tests
+dotnet build api/fribascore.slnx   # builds all projects
+dotnet test api/fribascore.slnx    # runs all tests
 dotnet run --project api/src/FribaScore.Api  # starts the API
 ```
 
