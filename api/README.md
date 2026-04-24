@@ -24,14 +24,12 @@ docker run -d \
 ### 2. Restore packages
 
 ```powershell
-dotnet restore
+dotnet restore fribascore.slnx
 ```
 
-### 3. Apply EF Core migrations
+### 3. Database schema status
 
-```powershell
-dotnet ef database update --project src/FribaScore.Application --startup-project src/FribaScore.Api
-```
+There is currently no committed EF Core migration in the repository. If you are working on the schema locally, create/apply migrations from `api/` once the initial migration work is in place.
 
 ### 4. Run the API
 
@@ -39,10 +37,10 @@ dotnet ef database update --project src/FribaScore.Application --startup-project
 dotnet run --project src/FribaScore.Api
 ```
 
-API will be available at `https://localhost:7xxx` (see `src/FribaScore.Api/Properties/launchSettings.json` for exact port).
+API will be available at `https://localhost:8443` and `http://localhost:8080` (see `src/FribaScore.Api/Properties/launchSettings.json`).
 
-OpenAPI spec: `https://localhost:7xxx/openapi/v1.json`  
-Scalar UI: `https://localhost:7xxx/scalar/v1`
+OpenAPI spec: `https://localhost:8443/openapi/v1.json`  
+Scalar UI: `https://localhost:8443/scalar/v1`
 
 ## Project Structure
 
@@ -68,8 +66,7 @@ api/
 ## Running Tests
 
 ```powershell
-dotnet test api/test/FribaScore.Api.Tests.Unit
-dotnet test api/test/FribaScore.Api.Tests.Integration
+dotnet test fribascore.slnx
 ```
 
 ## Connection String
@@ -79,7 +76,7 @@ Override via environment variable or `appsettings.Development.json`:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=fribascore;Username=postgres;Password=postgres"
+    "FribaConnection": "Host=localhost;Database=fribascore;Username=postgres;Password=postgres"
   }
 }
 ```

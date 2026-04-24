@@ -16,7 +16,7 @@ Backend API for FribaScore — disc golf scorecard app.
 | Database | PostgreSQL via EF Core + Npgsql |
 | Result pattern | `LanguageExt.Core` — `Result<T>` / `.Match()` |
 | OpenAPI | Built-in `AddOpenApi()` + Scalar UI |
-| Solution format | SLNX (`fribascore.slnx`) |
+| Solution format | SLNX (`api/fribascore.slnx`) |
 
 ## Project Structure
 
@@ -48,28 +48,34 @@ api/
 
 ## Endpoints
 
-### Courses — public
+### Courses — current live routes
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/courses` | List all courses |
-| `GET` | `/courses/{id}` | Get a single course with hole data |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/api/courses` | Public | List all courses |
+| `GET` | `/api/courses/{id}` | Public | Get a single course with hole data |
+| `POST` | `/api/courses` | Authenticated | Create a course |
+| `DELETE` | `/api/courses/{id}` | Authenticated | Delete a course |
 
-### Players — auth required
+### Players — current live routes
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/players` | List players for the authenticated user |
-| `POST` | `/players` | Create a player |
-| `PUT` | `/players/{id}` | Update a player |
-| `DELETE` | `/players/{id}` | Delete a player |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/api/players` | Public | List all players |
+| `GET` | `/api/players/{id}` | Public | Get a single player |
+| `POST` | `/api/players` | Authenticated | Create a player |
+| `DELETE` | `/api/players/{id}` | Authenticated | Delete a player |
 
-### Rounds — auth required
+### Rounds — current live routes
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/rounds` | List rounds for the authenticated user |
-| `POST` | `/rounds` | Create a round (immutable after creation — no PUT) |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/api/rounds` | Public | List all rounds |
+| `GET` | `/api/rounds/{id}` | Public | Get a single round |
+| `POST` | `/api/rounds` | Authenticated | Create a round |
+| `DELETE` | `/api/rounds/{id}` | Authenticated | Delete a round |
+
+> **Current status note:** `POST`/`DELETE` routes opt into authorization today, but the auth endpoints and per-user ownership scoping are not implemented yet. `PUT` endpoints for players are also not implemented in the live code.
 
 ### Auth — implemented in issue [#26](https://github.com/hjkuja/fribascore/issues/26)
 
@@ -90,7 +96,7 @@ Uses **ASP.NET Core Identity** with **HttpOnly cookie sessions** — the default
 - User credentials stored securely via ASP.NET Core Identity
 - Sessions maintained via persistent HttpOnly cookies (`SameSite=Strict`, secure in production)
 - No JWT tokens; tokens are never stored in `localStorage`
-- All non-public endpoints require `RequireAuthorization()`
+- Current non-public create/delete routes require `RequireAuthorization()`
 - Passwords are hashed via Identity; no plaintext password storage
 - Cookie auth redirects are suppressed for API endpoints so unauthenticated requests return `401` instead of HTML redirects
 
@@ -130,8 +136,8 @@ dotnet run
 
 | URL | Description |
 |-----|-------------|
-| `https://localhost:5001/scalar` | Scalar OpenAPI UI (dev only) |
-| `https://localhost:5001/openapi/v1.json` | Raw OpenAPI JSON |
+| `https://localhost:8443/scalar/v1` | Scalar OpenAPI UI (dev profile) |
+| `https://localhost:8443/openapi/v1.json` | Raw OpenAPI JSON |
 
 ## Testing
 

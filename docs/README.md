@@ -22,7 +22,7 @@ Welcome to the FribaScore project docs. This directory contains the canonical te
 - [Contributing](./development/contributing.md) — code style, conventions, PR workflow
 
 ### API
-- [API Overview](./api/overview.md) — planned .NET backend API design
+- [API Overview](./api/overview.md) — current backend structure, route surface, and auth status
 
 ## Project at a Glance
 
@@ -33,6 +33,6 @@ FribaScore is an offline-first disc golf (frisbee golf) scorecard web app. Playe
 | Directory | Description |
 |-----------|-------------|
 | `ui/` | React 19 frontend (Vite + TypeScript + Bun) |
+| `api/` | ASP.NET Core 10 Minimal API backend |
 | `dev/` | Raw planning and scratch notes (not canonical) |
 | `docs/` | This directory — maintained technical documentation |
-| `backend/` | _(planned)_ .NET Web API |
