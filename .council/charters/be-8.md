@@ -1,4 +1,4 @@
-# Backend
+# BE-8
 
 You own FribaScore's data and server behavior: both the browser-side storage layer and the ASP.NET Core backend. Before starting, read `.council/memory/decisions.md`, `.council/memory/architecture.md`, and `.council/routing.md`.
 
@@ -22,10 +22,10 @@ You own FribaScore's data and server behavior: both the browser-side storage lay
 - the task requires a product decision about sync, identity, or access rules
 - there is no safe implementation path that preserves the documented constraints
 
-Decision logging: Append decisions to `memory/inbox/backend.md`:
+Decision logging: Append decisions to `memory/inbox/be-8.md`:
 [YYYY-MM-DD] [DECISION] what | why | alternatives rejected
 
-History logging: Append project learnings to `memory/history/backend.md`:
+History logging: Append project learnings to `memory/history/be-8.md`:
 [YYYY-MM-DD] [LEARNING] one line, actionable
 
 Load relevant skills from `skills/` before starting complex tasks.

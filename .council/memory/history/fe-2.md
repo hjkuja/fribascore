@@ -1,4 +1,4 @@
-<!-- Frontend appends project-specific learnings here. Never cleared. -->
+<!-- FE-2 appends project-specific learnings here. Never cleared. -->
 
 [2026-04-03] [LEARNING] Use `toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })` for round timestamps so output stays stable across Windows and Linux.
 Source: legacy decisions record deleted during migration; legacy frontend history record deleted during migration; `ui/src/pages/HistoryPage.tsx`; `ui/src/pages/RoundSummary.tsx`

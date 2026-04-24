@@ -9,10 +9,10 @@ Before starting, read:
 
 1. `.council/charters/scribe.md`
 2. `.council/memory/decisions.md`
-3. `.council/memory/inbox/lead.md`
-4. `.council/memory/inbox/backend.md`
-5. `.council/memory/inbox/frontend.md`
-6. `.council/memory/inbox/tester.md`
+3. `.council/memory/inbox/ld-7.md`
+4. `.council/memory/inbox/be-8.md`
+5. `.council/memory/inbox/fe-2.md`
+6. `.council/memory/inbox/qt-3.md`
 
 Only run when the human explicitly asks to merge session notes into durable memory.
 

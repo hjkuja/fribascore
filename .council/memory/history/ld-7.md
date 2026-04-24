@@ -1,4 +1,4 @@
-<!-- Lead appends project-specific learnings here. Never cleared. -->
+<!-- LD-7 appends project-specific learnings here. Never cleared. -->
 
 [2026-04-11] [LEARNING] Keep Aspire/AppHost work optional and non-blocking until the core auth/players/rounds/courses API slice is stable.
 Source: legacy decisions record deleted during migration; legacy lead history record deleted during migration; `ROADMAP.md`

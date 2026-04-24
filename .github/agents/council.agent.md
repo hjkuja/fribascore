@@ -26,10 +26,10 @@ Then decide whether the task should stay with a single specialist or be decompos
 
 Specialist prompts live in:
 
-- `.council/charters/lead.md`
-- `.council/charters/backend.md`
-- `.council/charters/frontend.md`
-- `.council/charters/tester.md`
+- `.council/charters/ld-7.md`
+- `.council/charters/be-8.md`
+- `.council/charters/fe-2.md`
+- `.council/charters/qt-3.md`
 - `.council/charters/scribe.md`
 
 Relevant durable learnings live in `.council/memory/history/`.

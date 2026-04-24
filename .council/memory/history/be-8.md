@@ -1,4 +1,4 @@
-<!-- Backend appends project-specific learnings here. Never cleared. -->
+<!-- BE-8 appends project-specific learnings here. Never cleared. -->
 
 [2026-04-05] [LEARNING] Keep backend work split across `FribaScore.Api`, `FribaScore.Application`, and `FribaScore.Contracts`; endpoints call services and `Contracts` stays framework-light.
 Source: legacy backend history record deleted during migration; `api/src/FribaScore.Api/Program.cs`; `api/src/FribaScore.Application/ServiceExtensions.cs`; `docs/api/overview.md`

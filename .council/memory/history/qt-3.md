@@ -1,4 +1,4 @@
-<!-- Tester appends project-specific learnings here. Never cleared. -->
+<!-- QT-3 appends project-specific learnings here. Never cleared. -->
 
 [2026-04-03] [LEARNING] With Bun, `mock.module()` should be restored by re-registering the original module in `afterEach`; `mock.restore()` alone is not enough.
 Source: legacy decisions record deleted during migration; legacy tester history record deleted during migration
