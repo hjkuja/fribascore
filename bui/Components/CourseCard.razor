@@ -1,0 +1,22 @@
+﻿@using FribaScore.Bui.Models
+@inject NavigationManager NavigationManager
+
+<article class="card mb-3" @onclick="NavigateToCourse">
+    <div class="card-body">
+        <h3 class="card-title">@Course.Name</h3>
+        <p class="card-text mb-1"><strong>Identifier:</strong> @Course.Identifier</p>
+        <p class="card-text mb-1"><strong>Holes:</strong> @Course.Holes.Count</p>
+        <p class="card-text mb-1"><strong>Total par:</strong> @Course.TotalPar</p>
+        <p class="card-text mb-0"><strong>Total length:</strong> @Course.TotalLength m</p>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public required Course Course { get; set; }
+
+    private void NavigateToCourse()
+    {
+        NavigationManager.NavigateTo($"/courses/{Course.Identifier}");
+    }
+}

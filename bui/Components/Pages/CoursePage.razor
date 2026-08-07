@@ -1,0 +1,49 @@
+﻿@page "/courses/{Identifier}"
+@using FribaScore.Bui.Data
+@using FribaScore.Bui.Models
+@inject IWebHostEnvironment HostEnvironment
+
+<PageTitle>@(course?.Name ?? "Course not found")</PageTitle>
+
+@if (course is null)
+{
+    <h1>Course not found</h1>
+    <p>The requested course could not be found.</p>
+}
+else
+{
+    <h1>@course.Name</h1>
+    @if (HostEnvironment.IsDevelopment())
+    {
+        <p><strong>Identifier:</strong> @course.Identifier</p>
+    }
+    <p><strong>Holes:</strong> @course.Holes.Count</p>
+    <p><strong>Total par:</strong> @course.TotalPar</p>
+    <p><strong>Total length:</strong> @course.TotalLength m</p>
+
+    <h2>Holes</h2>
+
+    <ul>
+        @foreach (var hole in course.Holes.OrderBy(h => h.Number))
+        {
+            <li>Hole @hole.Number - Par @hole.Par (@hole.Length m)</li>
+        }
+    </ul>
+}
+
+<p>
+    <a href="/courses">Back to courses</a>
+</p>
+
+@code {
+    [Parameter]
+    public string Identifier { get; set; } = string.Empty;
+
+    private Course? course;
+
+    protected override void OnParametersSet()
+    {
+        course = DummyData.Courses.FirstOrDefault(c =>
+            string.Equals(c.Identifier, Identifier, StringComparison.OrdinalIgnoreCase));
+    }
+}
