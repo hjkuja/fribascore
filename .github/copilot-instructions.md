@@ -226,3 +226,46 @@ dotnet run --project api/src/FribaScore.Api  # starts the API
 - **Program.cs**: Top-level statements — no `Program` class wrapper
 - **Namespaces**: File-scoped (e.g., `namespace FribaScore.Api.Endpoints;`)
 - **DI registration**: Encapsulated in `ServiceExtensions` in `Application` — call `services.AddApplicationServices()` from `Program.cs`
+
+---
+
+## Blazor UI
+
+### Project Structure
+
+The Blazor server-rendered UI lives in `bui/` at the repo root. The solution entry point is `bui/FribaScore.Bui.slnx`, and the project file is `bui/FribaScore.Bui.csproj`.
+
+```
+bui/
+  Components/
+    Layout/         # MainLayout, NavMenu, ReconnectModal (.razor + .razor.css + .razor.js)
+    Pages/           # Routable pages: Home, Courses, CoursePage, Error, NotFound
+    App.razor        # Root HTML document component
+    Routes.razor     # Router configuration
+    CourseCard.razor # Reusable component
+    _Imports.razor   # Shared using directives
+  Data/              # DummyData.cs — in-memory seed data used until a real data layer exists
+  Models/            # Course.cs — Course and Hole POCOs
+  Properties/        # launchSettings.json
+  Program.cs         # App startup/composition root
+  appsettings.json / appsettings.Development.json
+```
+
+### Architecture
+
+- **Framework**: Blazor with Razor Components, using Interactive Server render mode (`AddRazorComponents().AddInteractiveServerComponents()` in `Program.cs`).
+- **Routing**: Page components declare routes via `@page` directives, e.g. `/`, `/courses`, `/courses/{Identifier}`, `/Error`, `/not-found`.
+- **Data**: Currently uses static in-memory dummy data (`Data/DummyData.cs`) — no database wired up yet. Models in `Models/` (`Course`, `Hole`) mirror the domain shapes used by the API but are separate, local POCOs.
+- **Error handling**: `UseExceptionHandler("/Error", ...)` in non-development environments; `UseStatusCodePagesWithReExecute("/not-found", ...)` for status code pages.
+- **Component co-location**: `.razor.css` (scoped styles) and `.razor.js` files sit next to their `.razor` component (e.g., `Layout/ReconnectModal.razor`, `.razor.css`, `.razor.js`).
+
+### Build and Test
+
+```bash
+dotnet build bui/FribaScore.Bui.slnx   # builds the Blazor UI project
+dotnet run --project bui                # starts the Blazor UI app
+```
+
+**Warnings as errors:** `TreatWarningsAsErrors` is enabled in `FribaScore.Bui.csproj` — keep the build warning-free.
+
+**CI:** `.github/workflows/bui-ci.yml` — runs independently of the React UI (`ci.yml`) and API (`api-ci.yml`) workflows, triggered only on changes under `bui/`.
