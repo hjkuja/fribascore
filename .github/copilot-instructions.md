@@ -268,4 +268,6 @@ dotnet run --project bui                # starts the Blazor UI app
 
 **Warnings as errors:** `TreatWarningsAsErrors` is enabled in `FribaScore.Bui.csproj` — keep the build warning-free.
 
+**NuGet lockfile:** `bui/Directory.Build.props` sets `RestorePackagesWithLockFile=true` and enforces `RestoreLockedMode` in CI. Always run `dotnet restore` after adding packages and commit the updated `bui/packages.lock.json`.
+
 **CI:** `.github/workflows/bui-ci.yml` — runs independently of the React UI (`ci.yml`) and API (`api-ci.yml`) workflows, triggered only on changes under `bui/`.
