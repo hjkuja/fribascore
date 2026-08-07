@@ -1,0 +1,28 @@
+﻿@page "/courses"
+@using FribaScore.Bui.Data
+@using FribaScore.Bui.Models
+
+<PageTitle>Courses</PageTitle>
+
+<h1>Courses</h1>
+
+@if (courses.Count == 0)
+{
+    <p>No courses found.</p>
+}
+else
+{
+    @foreach (var course in courses)
+    {
+        <CourseCard Course="@course" @rendermode="InteractiveServer"/>
+    }
+}
+
+@code {
+    private List<Course> courses = [];
+
+    protected override void OnInitialized()
+    {
+        courses = DummyData.Courses;
+    }
+}
